@@ -32,8 +32,6 @@ async function connectDB() {
 }
 connectDB();
 
-
-
 if (!process.env.TELEGRAM_BOT_TOKEN) {
   console.error("❌ CRITICAL ERROR: TELEGRAM_BOT_TOKEN is missing!");
   process.exit(1);
@@ -41,7 +39,6 @@ if (!process.env.TELEGRAM_BOT_TOKEN) {
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
 console.log("🐣 Telegram Bot instance initialized");
-
 
 async function getFarmData() {
   try {
@@ -56,14 +53,14 @@ async function getFarmData() {
 async function saveFarmData(data) {
   if (!farmCollection) return;
   const cleanedData = { ...data };
-  delete cleanedData._id; // Ensure we don't try to overwrite _id if it exists
+  delete cleanedData._id;
+  // Ensure we don't try to overwrite _id if it exists
   await farmCollection.updateOne(
     { _id: "current_state" },
     { $set: cleanedData },
     { upsert: true }
   );
 }
-
 
 function generateId() {
   return "BATCH-" + Math.random().toString(36).substr(2, 4).toUpperCase();
@@ -97,7 +94,6 @@ function getProgressBar(current, total) {
   return "█".repeat(progress) + "░".repeat(size - progress);
 }
 
-
 // ----------------- SCENES -----------------
 
 // 1. Add Batch Wizard
@@ -113,13 +109,12 @@ const addBatchScene = new Scenes.WizardScene('ADD_BATCH_WIZARD',
     if (!ctx.message || !ctx.message.text) return;
     const qty = parseInt(ctx.message.text, 10);
     if (isNaN(qty)) return ctx.reply("Please type a valid number.");
-    
+
     const data = await getFarmData();
     data.pm_batches = data.pm_batches || [];
     const id = generateId();
     data.pm_batches.push({ id, name: ctx.wizard.state.bName, date: new Date().toISOString().split("T")[0], quantity: qty, mortality: [], stock: [], expenses: [], archived: false });
     await saveFarmData(data);
-    
     ctx.reply(`✅ Successfully added batch *${ctx.wizard.state.bName}* with *${qty}* birds!`, { parse_mode: 'Markdown', ...showMainMenu() });
     return ctx.scene.leave();
   }
@@ -146,11 +141,11 @@ const mortalityScene = new Scenes.WizardScene('MORTALITY_WIZARD',
     if (!ctx.message || !ctx.message.text) return;
     const count = parseInt(ctx.message.text, 10);
     if (isNaN(count)) return ctx.reply("Number only please!");
-    
+
     const data = await getFarmData();
     const b = data.pm_batches.find(x => x.id === ctx.wizard.state.sel);
     if (!b) return ctx.scene.leave();
-    
+
     b.mortality = b.mortality || [];
     b.mortality.push({ date: new Date().toISOString().split("T")[0], count, cause: "Unknown" });
     await saveFarmData(data);
@@ -180,11 +175,11 @@ const feedScene = new Scenes.WizardScene('FEED_WIZARD',
     if (!ctx.message || !ctx.message.text) return;
     const count = parseFloat(ctx.message.text);
     if (isNaN(count)) return ctx.reply("Number only please!");
-    
+
     const data = await getFarmData();
     const b = data.pm_batches.find(x => x.id === ctx.wizard.state.sel);
     if (!b) return ctx.scene.leave();
-    
+
     b.stock = b.stock || [];
     b.stock.push({ date: new Date().toISOString().split("T")[0], type: "Feed", qty: count });
     await saveFarmData(data);
@@ -206,11 +201,11 @@ const expenseScene = new Scenes.WizardScene('EXPENSE_WIZARD',
     if (!ctx.message || !ctx.message.text) return;
     const cost = parseFloat(ctx.message.text);
     if (isNaN(cost)) return ctx.reply("Number only please!");
-    
+
     const data = await getFarmData();
     data.pm_expenses = data.pm_expenses || [];
     data.pm_expenses.push({
-      id: "EXP-" + Math.random().toString(36).substr(2,5),
+      id: "EXP-" + Math.random().toString(36).substr(2, 5),
       date: new Date().toISOString().split("T")[0],
       item: ctx.wizard.state.item,
       amount: cost
@@ -235,7 +230,7 @@ const archiveScene = new Scenes.WizardScene('ARCHIVE_WIZARD',
       ctx.wizard.state.sel = ctx.callbackQuery.data.replace('a_', '');
       await ctx.answerCbQuery();
       ctx.reply("Are you sure you want to archive this batch? It will be hidden from the main menu.",
-        Markup.inlineKeyboard([ Markup.button.callback('Yes, Archive', 'y'), Markup.button.callback('Cancel', 'n') ])
+        Markup.inlineKeyboard([Markup.button.callback('Yes, Archive', 'y'), Markup.button.callback('Cancel', 'n')])
       );
       return ctx.wizard.next();
     }
@@ -269,11 +264,11 @@ const aiAdvisorScene = new Scenes.WizardScene('AI_ADVISOR_SCENE',
     if (!ctx.message || !ctx.message.text) return;
     const userQuery = ctx.message.text;
     await ctx.reply("⌛ Analyzing your data and thinking...");
-    
+
     try {
       const data = await getFarmData();
       const farmContext = JSON.stringify(data);
-      
+
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -284,23 +279,23 @@ const aiAdvisorScene = new Scenes.WizardScene('AI_ADVISOR_SCENE',
         body: JSON.stringify({
           model: "openrouter/free",
           messages: [
-            { role: "system", content: "You are an expert poultry farm management consultant. Use the following JSON data to answer accurately. Be concise and practical. Data: " + farmContext },
+            { role: "system", content: "You are an expert poultry farm management consultant. Use the following JSON data to answer accurately. Be concise and practical.\nData: " + farmContext },
             { role: "user", content: userQuery }
           ]
         })
       });
-      
+
       const result = await response.json();
-      
+
       if (result.error) {
         console.error("OpenRouter Error:", result.error);
         return ctx.reply(`❌ AI Error: ${result.error.message}`, showMainMenu());
       }
 
       let aiText = result.choices?.[0]?.message?.content || "I'm sorry, I couldn't process that right now.";
-      
+
       // Basic markdown cleaning to prevent stars bug
-      aiText = aiText.replace(/\*\*/g, '*'); 
+      aiText = aiText.replace(/\*\*/g, '*');
 
       await ctx.reply(aiText, { parse_mode: 'Markdown', ...showMainMenu() });
     } catch (e) {
@@ -310,7 +305,6 @@ const aiAdvisorScene = new Scenes.WizardScene('AI_ADVISOR_SCENE',
     return ctx.scene.leave();
   }
 );
-
 
 const stage = new Scenes.Stage([addBatchScene, mortalityScene, feedScene, expenseScene, archiveScene, aiAdvisorScene]);
 bot.use(session());
@@ -326,20 +320,21 @@ bot.action('btn_state', async (ctx) => {
   const data = await getFarmData();
   const active = getActiveBatches(data);
   if (active.length === 0) return ctx.reply("No active batches recorded yet.", { parse_mode: 'Markdown', ...showMainMenu() });
-  
+
   let msg = "✨ *LIVE FARM DASHBOARD*\n\n";
   active.forEach(b => {
-    const deaths = (b.mortality || []).reduce((sum, m) => sum + m.qty, 0);
-    const fed = (b.stock || []).reduce((sum, s) => sum + s.qty, 0);
+    // FIX: Properly checks for both 'count' and 'qty' to prevent NaN errors
+    const deaths = (b.mortality || []).reduce((sum, m) => sum + (m.count || m.qty || 0), 0);
+    const fed = (b.stock || []).reduce((sum, s) => sum + (s.qty || s.count || 0), 0);
     const currentCount = b.quantity - deaths;
     const bar = getProgressBar(currentCount, b.quantity);
-    
+
     msg += `📦 *${b.name.toUpperCase()}*\n`;
     msg += ` Health: \`${bar}\` (${currentCount} birds remaining)\n`;
     msg += ` 📉 Mortalities: ${deaths}  |  🌾 Feed Log: ${fed} bags\n`;
     msg += ` 🗓 Started: ${b.date}\n\n`;
   });
-  
+
   ctx.reply(msg, { parse_mode: 'Markdown', ...showMainMenu() });
 });
 
@@ -353,13 +348,15 @@ bot.action('btn_archive', async (ctx) => { await ctx.answerCbQuery(); ctx.scene.
 bot.action('btn_reset', async (ctx) => {
   await ctx.answerCbQuery();
   ctx.reply("⚠️ WARNING: Are you ABSOLUTELY SURE you want to delete everything? This cannot be undone.",
-    Markup.inlineKeyboard([ Markup.button.callback('✅ Yes, Delete Everything', 'confirm_reset'), Markup.button.callback('❌ Cancel', 'cancel_reset') ])
+    Markup.inlineKeyboard([Markup.button.callback('✅ Yes, Delete Everything', 'confirm_reset'), Markup.button.callback('❌ Cancel', 'cancel_reset')])
   );
 });
+
 bot.action('confirm_reset', async (ctx) => {
   await ctx.answerCbQuery(); await saveFarmData({ pm_batches: [], pm_expenses: [], pm_stock: [] });
   ctx.reply("✅ Farm data completely erased.", { parse_mode: 'Markdown', ...showMainMenu() });
 });
+
 bot.action('cancel_reset', async (ctx) => {
   await ctx.answerCbQuery(); ctx.reply("Reset canceled. Farm is safe.", { parse_mode: 'Markdown', ...showMainMenu() });
 });
@@ -377,15 +374,34 @@ app.use(express.static(WEB_DIR));
 
 app.get('/api/sync', async (req, res) => {
   const data = await getFarmData();
-  res.json(data);
+  // Bridge: Send both naming formats to ensure the web dashboard can read it
+  res.json({
+    ...data,
+    batches: data.pm_batches || [],
+    expenses: data.pm_expenses || [],
+    stock: data.pm_stock || []
+  });
 });
 
 app.post('/api/sync', async (req, res) => {
   if (req.body && typeof req.body === 'object') {
     const currentData = await getFarmData();
-    const mergedData = { ...currentData, ...req.body };
+
+    // Bridge: Grab the batches regardless of what the web dashboard named them
+    const incomingBatches = req.body.pm_batches || req.body.batches || currentData.pm_batches || [];
+    const incomingExpenses = req.body.pm_expenses || req.body.expenses || currentData.pm_expenses || [];
+    const incomingStock = req.body.pm_stock || req.body.stock || currentData.pm_stock || [];
+
+    const mergedData = {
+      ...currentData,
+      ...req.body,
+      pm_batches: incomingBatches,
+      pm_expenses: incomingExpenses,
+      pm_stock: incomingStock
+    };
+
     await saveFarmData(mergedData);
-    res.json({ success: true });
+    res.json({ success: true, data: mergedData });
   } else {
     res.status(400).json({ error: "Invalid payload" });
   }
