@@ -12,6 +12,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // MongoDB Cloud Configuration
+console.log("🛠 Attempting to connect to MongoDB Cloud...");
+if (!process.env.MONGODB_URI) {
+  console.error("❌ CRITICAL ERROR: MONGODB_URI is missing from Environment Variables!");
+}
+
 const mongoClient = new MongoClient(process.env.MONGODB_URI || "mongodb://localhost:27017");
 let farmCollection;
 
@@ -20,20 +25,23 @@ async function connectDB() {
     await mongoClient.connect();
     const db = mongoClient.db("poultry_farm");
     farmCollection = db.collection("state");
-    console.log("Connected to MongoDB Cloud");
+    console.log("✅ SUCCESS: Connected to MongoDB Cloud Database");
   } catch (e) {
-    console.error("DB Connection Failed", e);
+    console.error("❌ FAILED: MongoDB Connection Error:", e.message);
   }
 }
 connectDB();
 
 
-if (!process.env.TELEGRAM_BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN === "ENTER_YOUR_BOTFATHER_TOKEN_HERE") {
-  console.error("Please add your Telegram bot token to the .env file.");
+
+if (!process.env.TELEGRAM_BOT_TOKEN) {
+  console.error("❌ CRITICAL ERROR: TELEGRAM_BOT_TOKEN is missing!");
   process.exit(1);
 }
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
+console.log("🐣 Telegram Bot instance initialized");
+
 
 async function getFarmData() {
   try {
