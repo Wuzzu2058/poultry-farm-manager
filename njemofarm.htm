@@ -1,0 +1,1980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poultry Farm Manager — Bxen</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+:root {
+  --farm-green: #2d5016;
+  --farm-green-light: #4a7c28;
+  --farm-green-pale: #e8f5e0;
+  --farm-green-border: #c5ddb5;
+  --farm-white: #ffffff;
+  --farm-yellow: #f9a825;
+  --farm-red: #c62828;
+  --farm-blue: #1565c0;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: #f0f4ec;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  min-height: 100vh;
+}
+
+.app-header {
+  background: linear-gradient(135deg, var(--farm-green) 0%, var(--farm-green-light) 100%);
+  color: white;
+  padding: 12px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.app-header h1 {
+  font-size: 1.3rem;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.app-header small {
+  opacity: 0.85;
+  font-size: 0.8rem;
+}
+
+.nav-tabs-section {
+  background: var(--farm-white);
+  border-bottom: 2px solid var(--farm-green-pale);
+  padding: 0;
+  position: sticky;
+  top: 52px;
+  z-index: 999;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav-tabs-section .nav-tabs {
+  border: none;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  padding: 4px 8px;
+  gap: 2px;
+}
+
+.nav-tabs-section .nav-link {
+  border: none;
+  color: #666;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 8px 8px 0 0;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-tabs-section .nav-link:hover {
+  background: var(--farm-green-pale);
+  color: var(--farm-green);
+}
+
+.nav-tabs-section .nav-link.active {
+  background: var(--farm-green);
+  color: white;
+}
+
+.nav-tabs-section .nav-link i {
+  font-size: 1rem;
+}
+
+.tab-content { padding: 12px; }
+
+.card-farm {
+  background: var(--farm-white);
+  border: 1px solid var(--farm-green-border);
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.card-farm .card-header {
+  background: var(--farm-green-pale);
+  border-bottom: 1px solid var(--farm-green-border);
+  padding: 10px 14px;
+  font-weight: 700;
+  color: var(--farm-green);
+  font-size: 0.95rem;
+}
+
+.card-farm .card-body { padding: 14px; }
+
+.stat-box {
+  text-align: center;
+  padding: 14px 8px;
+  border-radius: 10px;
+  background: var(--farm-green-pale);
+  border: 1px solid var(--farm-green-border);
+}
+
+.stat-box .stat-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--farm-green);
+  line-height: 1.1;
+}
+
+.stat-box .stat-label {
+  font-size: 0.72rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.stat-box.alert-box { background: #fff3e0; border-color: #ffe0b2; }
+.stat-box.alert-box .stat-value { color: #e65100; }
+.stat-box.danger-box { background: #ffebee; border-color: #ffcdd2; }
+.stat-box.danger-box .stat-value { color: var(--farm-red); }
+.stat-box.info-box { background: #e3f2fd; border-color: #bbdefb; }
+.stat-box.info-box .stat-value { color: var(--farm-blue); }
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+  width: 100%;
+}
+
+.status-growing { background: #c8e6c9; color: #2e7d32; }
+.status-ready { background: #fff9c4; color: #f57f17; }
+.status-restock { background: #ffcdd2; color: #c62828; }
+
+.form-label {
+  font-weight: 600;
+  color: var(--farm-green);
+  font-size: 0.88rem;
+  margin-bottom: 4px;
+}
+
+.form-control, .form-select {
+  border: 1.5px solid #d0d8c8;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 1rem;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--farm-green);
+  box-shadow: 0 0 0 3px rgba(74, 124, 40, 0.15);
+}
+
+.btn-farm {
+  background: var(--farm-green);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.btn-farm:hover { background: var(--farm-green-light); color: white; }
+
+.btn-farm-outline {
+  background: transparent;
+  color: var(--farm-green);
+  border: 2px solid var(--farm-green);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.btn-farm-outline:hover { background: var(--farm-green-pale); color: var(--farm-green); }
+
+.btn-farm-sm {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  border-radius: 6px;
+}
+
+.btn-danger-farm {
+  background: var(--farm-red);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+}
+
+.table-farm {
+  font-size: 0.82rem;
+}
+
+.table-farm thead th {
+  background: var(--farm-green-pale);
+  color: var(--farm-green);
+  font-weight: 700;
+  border-bottom: 2px solid var(--farm-green-border);
+  white-space: nowrap;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  padding: 8px 6px;
+}
+
+.table-farm tbody td {
+  padding: 8px 6px;
+  vertical-align: middle;
+}
+
+.table-farm tbody tr:hover { background: #f5f9f0; }
+
+.reminder-item {
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  border-left: 4px solid var(--farm-yellow);
+  background: #fffde7;
+}
+
+.reminder-item.overdue {
+  border-left-color: var(--farm-red);
+  background: #fff5f5;
+}
+
+.reminder-item.upcoming {
+  border-left-color: var(--farm-blue);
+  background: #f0f7ff;
+}
+
+.reminder-item.done {
+  border-left-color: #999;
+  background: #f5f5f5;
+  opacity: 0.7;
+}
+
+.pl-positive { color: #2e7d32; font-weight: 800; }
+.pl-negative { color: #c62828; font-weight: 800; }
+
+.toggle-btn {
+  display: flex;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1.5px solid #d0d8c8;
+}
+
+.toggle-btn .btn {
+  border-radius: 0;
+  border: none;
+  font-size: 0.9rem;
+  padding: 8px 16px;
+}
+
+.toggle-btn .btn.active {
+  background: var(--farm-green);
+  color: white;
+}
+
+.toggle-btn .btn:not(.active) {
+  background: white;
+  color: #666;
+}
+
+.filter-bar {
+  background: var(--farm-green-pale);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.batch-selector {
+  background: white;
+  border: 2px solid var(--farm-green-border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+}
+
+.empty-state i { font-size: 3rem; margin-bottom: 10px; }
+
+@media (max-width: 576px) {
+  .stat-box .stat-value { font-size: 1.4rem; }
+  .nav-tabs-section .nav-link { font-size: 0.72rem; padding: 6px 8px; }
+  .nav-tabs-section .nav-link span { display: none; }
+  .nav-tabs-section .nav-link i { font-size: 1.2rem; }
+  .tab-content { padding: 8px; }
+  .table-responsive { font-size: 0.78rem; }
+}
+
+@media (min-width: 768px) {
+  .tab-content { padding: 16px; max-width: 900px; margin: 0 auto; }
+  .nav-tabs-section .nav-link span { display: inline; }
+}
+
+.fade-in { animation: fadeIn 0.3s ease-in; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
+</style>
+</head>
+<body>
+
+<div class="app-header d-flex justify-content-between align-items-center">
+  <div>
+    <h1><i class="bi bi-egg-fried me-2"></i>Poultry Farm Manager</h1>
+    <small id="headerDate"></small>
+  </div>
+  <div>
+    <span class="badge bg-light text-dark" style="font-size:0.75rem;">Offline</span>
+  </div>
+</div>
+
+<div class="nav-tabs-section">
+  <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabDashboard"><i class="bi bi-speedometer2"></i> <span>Dashboard</span></button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabDailyLog"><i class="bi bi-journal-plus"></i> <span>Daily Log</span></button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabVaccine"><i class="bi bi-shield-plus"></i> <span>Vaccine</span></button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabStock"><i class="bi bi-box-seam"></i> <span>Stock</span></button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabExpense"><i class="bi bi-receipt"></i> <span>Expense</span></button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabPL"><i class="bi bi-graph-up"></i> <span>P&L</span></button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabBatch"><i class="bi bi-collection"></i> <span>Batches</span></button></li>
+  </ul>
+</div>
+
+<div class="tab-content" id="mainTabContent">
+
+  <!-- DASHBOARD -->
+  <div class="tab-pane fade show active" id="tabDashboard">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0 fw-bold" style="color:var(--farm-green);"><i class="bi bi-speedometer2 me-2"></i>Dashboard</h5>
+      <select id="dashBatchSelect" class="form-select form-select-sm" style="max-width:200px;" onchange="switchBatchFromDash()"></select>
+    </div>
+
+    <div id="dashNoBatch" class="empty-state" style="display:none;">
+      <i class="bi bi-egg text-muted d-block"></i>
+      <p class="mt-2">No active batch. Go to <strong>Batches</strong> tab to create one.</p>
+    </div>
+
+    <div id="dashContent" style="display:none;" class="fade-in">
+      <div class="row g-2 mb-3">
+        <div class="col-6 col-md-3">
+          <div class="stat-box">
+            <div class="stat-value" id="dashBirdCount">—</div>
+            <div class="stat-label">Live Birds</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-box info-box">
+            <div class="stat-value" id="dashBatchAge">—</div>
+            <div class="stat-label">Batch Age (days)</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-box" id="dashStatusBox">
+            <div class="stat-value" id="dashStatus">—</div>
+            <div class="stat-label">Status</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-box">
+            <div class="stat-value" id="dashAvgWeight">—</div>
+            <div class="stat-label">Avg Weight (kg)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-farm">
+        <div class="card-header"><i class="bi bi-bell me-1"></i> Vaccine & Dosage Reminders (Next 7 Days)</div>
+        <div class="card-body" id="dashReminders">
+          <p class="text-muted mb-0">No upcoming reminders.</p>
+        </div>
+      </div>
+
+      <div class="card-farm">
+        <div class="card-header"><i class="bi bi-clock-history me-1"></i> Today's Summary</div>
+        <div class="card-body" id="dashTodaySummary">
+          <p class="text-muted mb-0">No log entry for today yet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAILY LOG -->
+  <div class="tab-pane fade" id="tabDailyLog">
+    <h5 class="mb-3 fw-bold" style="color:var(--farm-green);"><i class="bi bi-journal-plus me-2"></i>Daily Log Entry</h5>
+    <div id="dailyLogNoBatch" class="empty-state" style="display:none;">
+      <i class="bi bi-egg text-muted d-block"></i>
+      <p class="mt-2">Create a batch first to start logging.</p>
+    </div>
+    <div id="dailyLogContent" style="display:none;" class="fade-in">
+      <div class="card-farm">
+        <div class="card-body">
+          <form id="dailyLogForm" onsubmit="saveDailyLog(event)">
+            <div class="row g-2">
+              <div class="col-6">
+                <label class="form-label">Date</label>
+                <input type="date" id="dlDate" class="form-control" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Live Count</label>
+                <input type="number" id="dlLiveCount" class="form-control" placeholder="e.g. 95" min="0" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Mortality Today</label>
+                <input type="number" id="dlMortality" class="form-control" placeholder="0" min="0" value="0">
+              </div>
+              <div class="col-6">
+                <label class="form-label">Mortality Cause (optional)</label>
+                <input type="text" id="dlMortCause" class="form-control" placeholder="e.g. disease, predator">
+              </div>
+              <div class="col-6">
+                <label class="form-label">Avg Weight (kg)</label>
+                <input type="number" id="dlAvgWeight" class="form-control" placeholder="e.g. 1.5" step="0.01" min="0">
+              </div>
+              <div class="col-6">
+                <label class="form-label">Feed Type</label>
+                <select id="dlFeedType" class="form-select">
+                  <option value="Chick Mash">Chick Mash (0-3 wks)</option>
+                  <option value="Grower Mash">Grower Mash (4-7 wks)</option>
+                  <option value="Finisher">Finisher (8+ wks)</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Feed Amount (kg)</label>
+                <input type="number" id="dlFeedAmount" class="form-control" placeholder="Auto-suggested" step="0.1" min="0">
+                <small class="text-muted" id="dlFeedSuggest"></small>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Sawdust Changed?</label>
+                <div class="toggle-btn mt-2" id="dlSawdustToggle">
+                  <button type="button" class="btn btn-sm active" data-val="yes" onclick="setToggle('dlSawdustToggle','yes')">Yes</button>
+                  <button type="button" class="btn btn-sm" data-val="no" onclick="setToggle('dlSawdustToggle','no')">No</button>
+                </div>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Notes</label>
+                <textarea id="dlNotes" class="form-control" rows="2" placeholder="Any observations..."></textarea>
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-farm w-100"><i class="bi bi-check-lg me-1"></i> Save Log Entry</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card-farm mt-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span><i class="bi bi-table me-1"></i> Recent Logs</span>
+          <button class="btn btn-farm-outline btn-farm-sm" onclick="exportCSV('dailyLog')"><i class="bi bi-download me-1"></i>Export CSV</button>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-farm mb-0" id="dailyLogTable">
+              <thead>
+                <tr><th>Date</th><th>Birds</th><th>Died</th><th>Wt(kg)</th><th>Feed</th><th>Sawdust</th><th>Notes</th><th></th></tr>
+              </thead>
+              <tbody id="dailyLogTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VACCINE SCHEDULE -->
+  <div class="tab-pane fade" id="tabVaccine">
+    <h5 class="mb-3 fw-bold" style="color:var(--farm-green);"><i class="bi bi-shield-plus me-2"></i>Vaccine & Dosage Schedule</h5>
+    <div id="vaccineNoBatch" class="empty-state" style="display:none;">
+      <i class="bi bi-shield-x text-muted d-block"></i>
+      <p class="mt-2">Create a batch first.</p>
+    </div>
+    <div id="vaccineContent" style="display:none;" class="fade-in">
+      <div class="card-farm">
+        <div class="card-body">
+          <form id="vaccineForm" onsubmit="saveVaccine(event)">
+            <div class="row g-2">
+              <div class="col-6">
+                <label class="form-label">Date</label>
+                <input type="date" id="vacDate" class="form-control" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Vaccine / Drug Name</label>
+                <input type="text" id="vacName" class="form-control" placeholder="e.g. Newcastle, Gumboro" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Dose Description</label>
+                <input type="text" id="vacDose" class="form-control" placeholder="e.g. 1ml per bird in water">
+              </div>
+              <div class="col-6">
+                <label class="form-label">Repeat Every (days, 0=none)</label>
+                <input type="number" id="vacRepeat" class="form-control" placeholder="0" min="0" value="0">
+              </div>
+              <div class="col-6 d-flex align-items-end">
+                <button type="submit" class="btn btn-farm w-100"><i class="bi bi-plus-lg me-1"></i> Add Schedule</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card-farm mt-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span><i class="bi bi-calendar-check me-1"></i> Schedule</span>
+          <button class="btn btn-farm-outline btn-farm-sm" onclick="exportCSV('vaccines')"><i class="bi bi-download me-1"></i>Export CSV</button>
+        </div>
+        <div class="card-body" id="vaccineList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STOCK TRACKER -->
+  <div class="tab-pane fade" id="tabStock">
+    <h5 class="mb-3 fw-bold" style="color:var(--farm-green);"><i class="bi bi-box-seam me-2"></i>Stock Tracker</h5>
+    <div id="stockNoBatch" class="empty-state" style="display:none;">
+      <i class="bi bi-box text-muted d-block"></i>
+      <p class="mt-2">Create a batch first.</p>
+    </div>
+    <div id="stockContent" style="display:none;" class="fade-in">
+      <div class="card-farm">
+        <div class="card-body">
+          <ul class="nav nav-pills mb-3" id="stockTabs" role="tablist">
+            <li class="nav-item"><button class="nav-link active btn-farm-sm" data-bs-toggle="pill" data-bs-target="#stockSold" style="font-size:0.82rem;">Sold</button></li>
+            <li class="nav-item"><button class="nav-link btn-farm-sm ms-1" data-bs-toggle="pill" data-bs-target="#stockConsumed" style="font-size:0.82rem;">Own Use</button></li>
+            <li class="nav-item"><button class="nav-link btn-farm-sm ms-1" data-bs-toggle="pill" data-bs-target="#stockRestock" style="font-size:0.82rem;">Restock</button></li>
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane fade show active" id="stockSold">
+              <form onsubmit="saveStockEntry(event,'sold')">
+                <div class="row g-2">
+                  <div class="col-4">
+                    <label class="form-label">Date</label>
+                    <input type="date" id="stockSoldDate" class="form-control form-control-sm" required>
+                  </div>
+                  <div class="col-4">
+                    <label class="form-label">Quantity</label>
+                    <input type="number" id="stockSoldQty" class="form-control form-control-sm" min="1" required>
+                  </div>
+                  <div class="col-4">
+                    <label class="form-label">Price/Bird (KES)</label>
+                    <input type="number" id="stockSoldPrice" class="form-control form-control-sm" min="0" value="650">
+                  </div>
+                  <div class="col-8">
+                    <label class="form-label">Buyer (optional)</label>
+                    <input type="text" id="stockSoldBuyer" class="form-control form-control-sm" placeholder="Buyer name">
+                  </div>
+                  <div class="col-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-farm w-100 btn-sm"><i class="bi bi-check me-1"></i>Record Sale</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <div class="tab-pane fade" id="stockConsumed">
+              <form onsubmit="saveStockEntry(event,'consumed')">
+                <div class="row g-2">
+                  <div class="col-6">
+                    <label class="form-label">Date</label>
+                    <input type="date" id="stockConDate" class="form-control form-control-sm" required>
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label">Quantity</label>
+                    <input type="number" id="stockConQty" class="form-control form-control-sm" min="1" required>
+                  </div>
+                  <div class="col-12">
+                    <small class="text-muted">Valued at 650 KES/bird for P&L</small>
+                  </div>
+                  <div class="col-12 d-flex align-items-end">
+                    <button type="submit" class="btn btn-farm w-100 btn-sm"><i class="bi bi-check me-1"></i>Record Consumption</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <div class="tab-pane fade" id="stockRestock">
+              <form onsubmit="saveStockEntry(event,'restock')">
+                <div class="row g-2">
+                  <div class="col-6">
+                    <label class="form-label">Date</label>
+                    <input type="date" id="stockResDate" class="form-control form-control-sm" required>
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label">Chicks Added</label>
+                    <input type="number" id="stockResQty" class="form-control form-control-sm" min="1" required>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Cost per Chick (KES)</label>
+                    <input type="number" id="stockResCost" class="form-control form-control-sm" min="0" value="0">
+                  </div>
+                  <div class="col-12 d-flex align-items-end">
+                    <button type="submit" class="btn btn-farm w-100 btn-sm"><i class="bi bi-check me-1"></i>Record Restock</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-farm mt-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span><i class="bi bi-list-ul me-1"></i> Stock Entries</span>
+          <button class="btn btn-farm-outline btn-farm-sm" onclick="exportCSV('stock')"><i class="bi bi-download me-1"></i>Export CSV</button>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-farm mb-0" id="stockTable">
+              <thead>
+                <tr><th>Date</th><th>Type</th><th>Qty</th><th>Details</th><th></th></tr>
+              </thead>
+              <tbody id="stockTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPENSE LEDGER -->
+  <div class="tab-pane fade" id="tabExpense">
+    <h5 class="mb-3 fw-bold" style="color:var(--farm-green);"><i class="bi bi-receipt me-2"></i>Expense Ledger</h5>
+    <div id="expenseNoBatch" class="empty-state" style="display:none;">
+      <i class="bi bi-receipt-cutoff text-muted d-block"></i>
+      <p class="mt-2">Create a batch first.</p>
+    </div>
+    <div id="expenseContent" style="display:none;" class="fade-in">
+      <div class="card-farm">
+        <div class="card-body">
+          <form id="expenseForm" onsubmit="saveExpense(event)">
+            <div class="row g-2">
+              <div class="col-6">
+                <label class="form-label">Date</label>
+                <input type="date" id="expDate" class="form-control" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Category</label>
+                <select id="expCategory" class="form-select">
+                  <option value="Feed">Feed</option>
+                  <option value="Transport">Transport</option>
+                  <option value="Sawdust">Sawdust</option>
+                  <option value="Vet & Dosage">Vet & Dosage</option>
+                  <option value="Labor">Labor</option>
+                  <option value="Electricity">Electricity</option>
+                  <option value="Misc">Misc</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Amount (KES)</label>
+                <input type="number" id="expAmount" class="form-control" min="0" step="1" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Description</label>
+                <input type="text" id="expDesc" class="form-control" placeholder="Brief description">
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-farm w-100"><i class="bi bi-plus-lg me-1"></i> Add Expense</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card-farm mt-3">
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <span><i class="bi bi-table me-1"></i> All Expenses</span>
+          <button class="btn btn-farm-outline btn-farm-sm" onclick="exportCSV('expenses')"><i class="bi bi-download me-1"></i>Export CSV</button>
+        </div>
+        <div class="card-body">
+          <div class="filter-bar row g-2 mb-2 align-items-end">
+            <div class="col-4">
+              <label class="form-label" style="font-size:0.75rem;">Category</label>
+              <select id="expFilterCat" class="form-select form-select-sm" onchange="renderExpenseTable()">
+                <option value="">All</option>
+                <option value="Feed">Feed</option>
+                <option value="Transport">Transport</option>
+                <option value="Sawdust">Sawdust</option>
+                <option value="Vet & Dosage">Vet & Dosage</option>
+                <option value="Labor">Labor</option>
+                <option value="Electricity">Electricity</option>
+                <option value="Misc">Misc</option>
+              </select>
+            </div>
+            <div class="col-4">
+              <label class="form-label" style="font-size:0.75rem;">From</label>
+              <input type="date" id="expFilterFrom" class="form-control form-control-sm" onchange="renderExpenseTable()">
+            </div>
+            <div class="col-4">
+              <label class="form-label" style="font-size:0.75rem;">To</label>
+              <input type="date" id="expFilterTo" class="form-control form-control-sm" onchange="renderExpenseTable()">
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-farm mb-0" id="expenseTable">
+              <thead>
+                <tr><th>Date</th><th>Category</th><th>Amount (KES)</th><th>Description</th><th></th></tr>
+              </thead>
+              <tbody id="expenseTableBody"></tbody>
+              <tfoot id="expenseTableFoot"></tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P&L SUMMARY -->
+  <div class="tab-pane fade" id="tabPL">
+    <h5 class="mb-3 fw-bold" style="color:var(--farm-green);"><i class="bi bi-graph-up me-2"></i>Profit & Loss Summary</h5>
+    <div id="plNoBatch" class="empty-state" style="display:none;">
+      <i class="bi bi-graph-down text-muted d-block"></i>
+      <p class="mt-2">Create a batch to see P&L.</p>
+    </div>
+    <div id="plContent" style="display:none;" class="fade-in">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="toggle-btn" id="plViewToggle">
+          <button type="button" class="btn btn-sm active" data-val="current" onclick="setPLView('current')">Current Batch</button>
+          <button type="button" class="btn btn-sm" data-val="alltime" onclick="setPLView('alltime')">All Time</button>
+        </div>
+        <button class="btn btn-farm-outline btn-farm-sm" onclick="exportCSV('pl')"><i class="bi bi-download me-1"></i>Export</button>
+      </div>
+
+      <div class="row g-2 mb-3">
+        <div class="col-6 col-md-4">
+          <div class="stat-box">
+            <div class="stat-value" id="plRevenue">0</div>
+            <div class="stat-label">Total Revenue (KES)</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="stat-box danger-box">
+            <div class="stat-value" id="plExpenses">0</div>
+            <div class="stat-label">Total Expenses (KES)</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="stat-box" id="plNetBox">
+            <div class="stat-value" id="plNet">0</div>
+            <div class="stat-label">Net Profit/Loss (KES)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-2 mb-3">
+        <div class="col-4">
+          <div class="stat-box info-box">
+            <div class="stat-value" id="plCostPerBird">0</div>
+            <div class="stat-label">Cost/Bird (KES)</div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="stat-box info-box">
+            <div class="stat-value" id="plRevPerBird">0</div>
+            <div class="stat-label">Rev/Bird (KES)</div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="stat-box info-box">
+            <div class="stat-value" id="plTotalBirds">0</div>
+            <div class="stat-label">Birds Produced</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-farm">
+        <div class="card-header"><i class="bi bi-pie-chart me-1"></i> Revenue Breakdown</div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-2"><span>Cash Sales:</span><strong id="plCashSales">0 KES</strong></div>
+          <div class="d-flex justify-content-between mb-2"><span>Own Use (650/bird):</span><strong id="plOwnUse">0 KES</strong></div>
+          <hr>
+          <div class="d-flex justify-content-between"><span>Total Revenue:</span><strong id="plTotalRev">0 KES</strong></div>
+        </div>
+      </div>
+
+      <div class="card-farm mt-3">
+        <div class="card-header"><i class="bi bi-bar-chart me-1"></i> Expense Breakdown by Category</div>
+        <div class="card-body" id="plExpenseBreakdown"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BATCH MANAGEMENT -->
+  <div class="tab-pane fade" id="tabBatch">
+    <h5 class="mb-3 fw-bold" style="color:var(--farm-green);"><i class="bi bi-collection me-2"></i>Batch Management</h5>
+
+    <div class="card-farm">
+      <div class="card-body">
+        <form id="batchForm" onsubmit="createBatch(event)">
+          <div class="row g-2">
+            <div class="col-6">
+              <label class="form-label">Start Date</label>
+              <input type="date" id="batchStartDate" class="form-control" required>
+            </div>
+            <div class="col-6">
+              <label class="form-label">Initial Chicks</label>
+              <input type="number" id="batchChicks" class="form-control" min="1" placeholder="e.g. 100" required>
+            </div>
+            <div class="col-6">
+              <label class="form-label">Cost per Chick (KES)</label>
+              <input type="number" id="batchCostPerChick" class="form-control" min="0" value="0" step="1">
+            </div>
+            <div class="col-6">
+              <label class="form-label">Supplier (optional)</label>
+              <input type="text" id="batchSupplier" class="form-control" placeholder="e.g. Kenchic">
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-farm w-100"><i class="bi bi-plus-circle me-1"></i> Create New Batch</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card-farm mt-3">
+      <div class="card-header"><i class="bi bi-collection me-1"></i> Active Batch</div>
+      <div class="card-body" id="activeBatchInfo">
+        <p class="text-muted mb-0">No active batch.</p>
+      </div>
+    </div>
+
+    <div class="card-farm mt-3">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-archive me-1"></i> Archived Batches</span>
+      </div>
+      <div class="card-body" id="archivedBatchList">
+        <p class="text-muted mb-0">No archived batches.</p>
+      </div>
+    </div>
+
+    <div class="card-farm mt-3">
+      <div class="card-body">
+        <button class="btn btn-danger-farm w-100" onclick="confirmResetAll()"><i class="bi bi-exclamation-triangle me-1"></i> Reset All Data</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ==================== DATA LAYER ====================
+const LS_KEYS = {
+  batches: 'pfm_batches',
+  activeBatchId: 'pfm_activeBatchId',
+  dailyLogs: 'pfm_dailyLogs',
+  vaccines: 'pfm_vaccines',
+  stockEntries: 'pfm_stockEntries',
+  expenses: 'pfm_expenses'
+};
+
+function loadData(key) {
+  try {
+    const d = localStorage.getItem(key);
+    return d ? JSON.parse(d) : null;
+  } catch { return null; }
+}
+
+function saveData(key, data) {
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+function getBatches() { return loadData(LS_KEYS.batches) || []; }
+function saveBatches(b) { saveData(LS_KEYS.batches, b); }
+function getActiveBatchId() { return loadData(LS_KEYS.activeBatchId) || ''; }
+function setActiveBatchId(id) { saveData(LS_KEYS.activeBatchId, id); }
+
+function getBatchData(key) {
+  const bid = getActiveBatchId();
+  if (!bid) return [];
+  const all = loadData(key) || {};
+  return all[bid] || [];
+}
+
+function saveBatchData(key, data) {
+  const bid = getActiveBatchId();
+  if (!bid) return;
+  const all = loadData(key) || {};
+  all[bid] = data;
+  saveData(key, all);
+}
+
+function getActiveBatch() {
+  const id = getActiveBatchId();
+  return getBatches().find(b => b.id === id) || null;
+}
+
+function genId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
+
+function todayStr() { return new Date().toISOString().split('T')[0]; }
+
+function daysBetween(d1, d2) {
+  const a = new Date(d1), b = new Date(d2);
+  return Math.floor((b - a) / (1000 * 60 * 60 * 24));
+}
+
+// ==================== TOAST ====================
+function showToast(msg, type = 'success') {
+  const container = document.getElementById('toastContainer');
+  const bg = type === 'success' ? 'bg-success' : type === 'danger' ? 'bg-danger' : 'bg-warning';
+  const id = 'toast_' + Date.now();
+  container.innerHTML += `<div id="${id}" class="toast show ${bg} text-white mb-2" role="alert" style="border-radius:8px;min-width:250px;">
+    <div class="toast-body fw-semibold">${msg}</div>
+  </div>`;
+  setTimeout(() => { const el = document.getElementById(id); if (el) el.remove(); }, 2500);
+}
+
+// ==================== TOGGLE BUTTON ====================
+function setToggle(containerId, val) {
+  const container = document.getElementById(containerId);
+  container.querySelectorAll('.btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.val === val);
+  });
+}
+
+function getToggleValue(containerId) {
+  const container = document.getElementById(containerId);
+  const active = container.querySelector('.btn.active');
+  return active ? active.dataset.val : 'no';
+}
+
+// ==================== CALCULATIONS ====================
+function calcLiveCount(batch) {
+  if (!batch) return 0;
+  const logs = getBatchData(LS_KEYS.dailyLogs);
+  const stock = getBatchData(LS_KEYS.stockEntries);
+  
+  // Start with initial chicks
+  let count = batch.initialChicks;
+  
+  // Add restock
+  stock.filter(s => s.type === 'restock').forEach(s => { count += s.quantity; });
+  
+  // Subtract sold, consumed
+  stock.filter(s => s.type === 'sold' || s.type === 'consumed').forEach(s => { count -= s.quantity; });
+  
+  // Subtract mortality from logs
+  logs.forEach(l => { if (l.mortality) count -= parseInt(l.mortality) || 0; });
+  
+  // Use last manual live count if available
+  const sortedLogs = [...logs].sort((a, b) => b.date.localeCompare(a.date));
+  if (sortedLogs.length > 0 && sortedLogs[0].liveCount) {
+    count = parseInt(sortedLogs[0].liveCount);
+  }
+  
+  return Math.max(0, count);
+}
+
+function getBatchAgeDays(batch) {
+  if (!batch) return 0;
+  return Math.max(0, daysBetween(batch.startDate, todayStr()));
+}
+
+function getBatchStatus(batch) {
+  if (!batch) return { text: 'N/A', class: 'status-growing' };
+  const count = calcLiveCount(batch);
+  const age = getBatchAgeDays(batch);
+  if (count < 20 && count > 0) return { text: 'Restock Needed', class: 'status-restock' };
+  if (age >= 90) return { text: 'Ready for Sale', class: 'status-ready' };
+  return { text: 'Growing', class: 'status-growing' };
+}
+
+function getFeedTypeForAge(batch) {
+  if (!batch) return 'Chick Mash';
+  const age = getBatchAgeDays(batch);
+  if (age <= 21) return 'Chick Mash';
+  if (age <= 49) return 'Grower Mash';
+  return 'Finisher';
+}
+
+function getFeedRate(feedType) {
+  if (feedType === 'Chick Mash') return 0.1;
+  if (feedType === 'Grower Mash') return 0.15;
+  return 0.2;
+}
+
+// ==================== NAVIGATION / BATCH SWITCHING ====================
+function populateBatchSelectors() {
+  const batches = getBatches();
+  const active = getActiveBatchId();
+  
+  // Dashboard selector
+  const dashSel = document.getElementById('dashBatchSelect');
+  dashSel.innerHTML = batches.filter(b => !b.archived).map(b => 
+    `<option value="${b.id}" ${b.id === active ? 'selected' : ''}>${b.label || 'Batch ' + b.id.substr(0,5)}</option>`
+  ).join('');
+  
+  if (batches.filter(b => !b.archived).length === 0) {
+    dashSel.style.display = 'none';
+  } else {
+    dashSel.style.display = '';
+  }
+}
+
+function switchBatchFromDash() {
+  const sel = document.getElementById('dashBatchSelect');
+  if (sel.value) {
+    setActiveBatchId(sel.value);
+    refreshAll();
+  }
+}
+
+function checkBatchState() {
+  const batch = getActiveBatch();
+  const hasActive = !!batch;
+  
+  // Show/hide no-batch messages
+  ['dashNoBatch','dashContent','dailyLogNoBatch','dailyLogContent',
+   'vaccineNoBatch','vaccineContent','stockNoBatch','stockContent',
+   'expenseNoBatch','expenseContent','plNoBatch','plContent'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      if (id.includes('NoBatch')) el.style.display = hasActive ? 'none' : '';
+      else el.style.display = hasActive ? '' : 'none';
+    }
+  });
+  
+  return batch;
+}
+
+// ==================== DASHBOARD ====================
+function renderDashboard() {
+  const batch = getActiveBatch();
+  if (!batch) {
+    document.getElementById('dashNoBatch').style.display = '';
+    document.getElementById('dashContent').style.display = 'none';
+    return;
+  }
+  document.getElementById('dashNoBatch').style.display = 'none';
+  document.getElementById('dashContent').style.display = '';
+  
+  const count = calcLiveCount(batch);
+  const age = getBatchAgeDays(batch);
+  const status = getBatchStatus(batch);
+  
+  document.getElementById('dashBirdCount').textContent = count;
+  document.getElementById('dashBatchAge').textContent = age;
+  document.getElementById('dashStatus').textContent = status.text;
+  
+  const statusBox = document.getElementById('dashStatusBox');
+  statusBox.className = 'stat-box ' + (status.class === 'status-restock' ? 'danger-box' : status.class === 'status-ready' ? 'alert-box' : '');
+  
+  // Avg weight from last log
+  const logs = getBatchData(LS_KEYS.dailyLogs);
+  const sortedLogs = [...logs].sort((a, b) => b.date.localeCompare(a.date));
+  const lastLog = sortedLogs.find(l => l.avgWeight);
+  document.getElementById('dashAvgWeight').textContent = lastLog ? lastLog.avgWeight : '—';
+  
+  // Reminders
+  renderReminders();
+  
+  // Today's summary
+  const todayLog = sortedLogs.find(l => l.date === todayStr());
+  const todaySummary = document.getElementById('dashTodaySummary');
+  if (todayLog) {
+    todaySummary.innerHTML = `
+      <div class="d-flex justify-content-between mb-1"><span>Live Count:</span><strong>${todayLog.liveCount}</strong></div>
+      <div class="d-flex justify-content-between mb-1"><span>Mortality:</span><strong>${todayLog.mortality || 0}</strong></div>
+      <div class="d-flex justify-content-between mb-1"><span>Feed:</span><strong>${todayLog.feedAmount || 0} kg ${todayLog.feedType || ''}</strong></div>
+      <div class="d-flex justify-content-between mb-1"><span>Sawdust:</span><strong>${todayLog.sawdust === 'yes' ? '✅ Yes' : '❌ No'}</strong></div>
+      ${todayLog.notes ? `<div class="mt-1 text-muted"><small>📝 ${todayLog.notes}</small></div>` : ''}
+    `;
+  } else {
+    todaySummary.innerHTML = '<p class="text-muted mb-0">No log entry for today yet. Go to <strong>Daily Log</strong> to record.</p>';
+  }
+}
+
+function renderReminders() {
+  const vaccines = getBatchData(LS_KEYS.vaccines);
+  const today = new Date();
+  const container = document.getElementById('dashReminders');
+  
+  const upcoming = vaccines
+    .filter(v => !v.administered)
+    .filter(v => {
+      const d = new Date(v.date);
+      const diff = Math.floor((d - today) / (1000 * 60 * 60 * 24));
+      return diff >= -1 && diff <= 7;
+    })
+    .sort((a, b) => a.date.localeCompare(b.date));
+  
+  const overdue = vaccines
+    .filter(v => !v.administered)
+    .filter(v => {
+      const d = new Date(v.date);
+      const diff = Math.floor((d - today) / (1000 * 60 * 60 * 24));
+      return diff < -1;
+    })
+    .sort((a, b) => a.date.localeCompare(b.date));
+  
+  if (upcoming.length === 0 && overdue.length === 0) {
+    container.innerHTML = '<p class="text-muted mb-0">No upcoming or overdue reminders.</p>';
+    return;
+  }
+  
+  let html = '';
+  overdue.forEach(v => {
+    html += `<div class="reminder-item overdue">
+      <div class="d-flex justify-content-between">
+        <strong>⚠️ OVERDUE: ${v.name}</strong>
+        <small class="text-danger">${v.date}</small>
+      </div>
+      <small class="text-muted">${v.dose || ''}</small>
+    </div>`;
+  });
+  upcoming.forEach(v => {
+    const diff = Math.floor((new Date(v.date) - today) / (1000 * 60 * 60 * 24));
+    const when = diff === 0 ? 'TODAY' : diff === 1 ? 'Tomorrow' : `In ${diff} days`;
+    html += `<div class="reminder-item upcoming">
+      <div class="d-flex justify-content-between">
+        <strong>💉 ${v.name}</strong>
+        <small class="text-primary">${when} — ${v.date}</small>
+      </div>
+      <small class="text-muted">${v.dose || ''}</small>
+    </div>`;
+  });
+  
+  container.innerHTML = html;
+}
+
+// ==================== DAILY LOG ====================
+function renderDailyLog() {
+  const batch = getActiveBatch();
+  if (!batch) return;
+  
+  // Auto-fill date
+  document.getElementById('dlDate').value = todayStr();
+  
+  // Auto-suggest feed
+  const feedType = getFeedTypeForAge(batch);
+  document.getElementById('dlFeedType').value = feedType;
+  
+  const count = calcLiveCount(batch);
+  const rate = getFeedRate(feedType);
+  const suggested = (count * rate).toFixed(1);
+  document.getElementById('dlFeedSuggest').textContent = `Suggested: ${suggested} kg (${count} birds × ${rate} kg)`;
+  document.getElementById('dlFeedAmount').value = suggested;
+  
+  // Pre-fill live count
+  document.getElementById('dlLiveCount').value = count;
+  
+  // Render table
+  renderLogTable();
+}
+
+function renderLogTable() {
+  const logs = getBatchData(LS_KEYS.dailyLogs);
+  const sorted = [...logs].sort((a, b) => b.date.localeCompare(a.date));
+  const tbody = document.getElementById('dailyLogTableBody');
+  
+  if (sorted.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-3">No logs yet</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = sorted.map((l, i) => `
+    <tr>
+      <td class="text-nowrap">${l.date}</td>
+      <td><strong>${l.liveCount}</strong></td>
+      <td class="${l.mortality > 0 ? 'text-danger fw-bold' : ''}">${l.mortality || 0}${l.mortCause ? `<br><small class="text-muted">${l.mortCause}</small>` : ''}</td>
+      <td>${l.avgWeight || '—'}</td>
+      <td>${l.feedAmount || 0} kg<br><small class="text-muted">${l.feedType || ''}</small></td>
+      <td>${l.sawdust === 'yes' ? '✅' : '❌'}</td>
+      <td><small>${l.notes || ''}</small></td>
+      <td><button class="btn btn-danger-farm btn-sm" onclick="deleteLog(${i})"><i class="bi bi-trash"></i></button></td>
+    </tr>
+  `).join('');
+}
+
+function saveDailyLog(e) {
+  e.preventDefault();
+  const batch = getActiveBatch();
+  if (!batch) return;
+  
+  const logs = getBatchData(LS_KEYS.dailyLogs);
+  
+  const entry = {
+    date: document.getElementById('dlDate').value,
+    liveCount: parseInt(document.getElementById('dlLiveCount').value) || 0,
+    mortality: parseInt(document.getElementById('dlMortality').value) || 0,
+    mortCause: document.getElementById('dlMortCause').value.trim(),
+    avgWeight: document.getElementById('dlAvgWeight').value ? parseFloat(document.getElementById('dlAvgWeight').value) : null,
+    feedType: document.getElementById('dlFeedType').value,
+    feedAmount: parseFloat(document.getElementById('dlFeedAmount').value) || 0,
+    sawdust: getToggleValue('dlSawdustToggle'),
+    notes: document.getElementById('dlNotes').value.trim()
+  };
+  
+  // Check if entry for this date exists, update it
+  const existingIdx = logs.findIndex(l => l.date === entry.date);
+  if (existingIdx >= 0) {
+    logs[existingIdx] = entry;
+  } else {
+    logs.push(entry);
+  }
+  
+  saveBatchData(LS_KEYS.dailyLogs, logs);
+  showToast('Daily log saved!');
+  
+  // Reset form partially
+  document.getElementById('dlMortality').value = 0;
+  document.getElementById('dlMortCause').value = '';
+  document.getElementById('dlNotes').value = '';
+  
+  renderAll();
+}
+
+function deleteLog(idx) {
+  if (!confirm('Delete this log entry?')) return;
+  const logs = getBatchData(LS_KEYS.dailyLogs);
+  const sorted = [...logs].sort((a, b) => b.date.localeCompare(a.date));
+  const entry = sorted[idx];
+  const realIdx = logs.findIndex(l => l.date === entry.date);
+  if (realIdx >= 0) logs.splice(realIdx, 1);
+  saveBatchData(LS_KEYS.dailyLogs, logs);
+  showToast('Log deleted', 'danger');
+  renderAll();
+}
+
+// ==================== VACCINE SCHEDULE ====================
+function saveVaccine(e) {
+  e.preventDefault();
+  const batch = getActiveBatch();
+  if (!batch) return;
+  
+  const vaccines = getBatchData(LS_KEYS.vaccines);
+  
+  const entry = {
+    id: genId(),
+    date: document.getElementById('vacDate').value,
+    name: document.getElementById('vacName').value.trim(),
+    dose: document.getElementById('vacDose').value.trim(),
+    repeat: parseInt(document.getElementById('vacRepeat').value) || 0,
+    administered: false
+  };
+  
+  vaccines.push(entry);
+  
+  // If repeat, generate future dates
+  if (entry.repeat > 0) {
+    for (let i = 1; i <= 6; i++) { // Generate up to 6 repeats
+      const futureDate = new Date(entry.date);
+      futureDate.setDate(futureDate.getDate() + (entry.repeat * i));
+      vaccines.push({
+        id: genId(),
+        date: futureDate.toISOString().split('T')[0],
+        name: entry.name + ' (Repeat ' + i + ')',
+        dose: entry.dose,
+        repeat: 0,
+        administered: false,
+        parentId: entry.id
+      });
+    }
+  }
+  
+  saveBatchData(LS_KEYS.vaccines, vaccines);
+  showToast('Vaccine schedule added!');
+  document.getElementById('vacName').value = '';
+  document.getElementById('vacDose').value = '';
+  document.getElementById('vacRepeat').value = '0';
+  renderAll();
+}
+
+function renderVaccines() {
+  const batch = getActiveBatch();
+  if (!batch) return;
+  
+  const vaccines = getBatchData(LS_KEYS.vaccines);
+  const today = new Date();
+  const container = document.getElementById('vaccineList');
+  
+  // Sort: overdue first, then upcoming, then future, then done
+  const sorted = [...vaccines].sort((a, b) => {
+    if (a.administered !== b.administered) return a.administered ? 1 : -1;
+    return a.date.localeCompare(b.date);
+  });
+  
+  if (sorted.length === 0) {
+    container.innerHTML = '<p class="text-muted text-center">No vaccine schedules added yet.</p>';
+    return;
+  }
+  
+  container.innerHTML = sorted.map((v, i) => {
+    const diff = Math.floor((new Date(v.date) - today) / (1000 * 60 * 60 * 24));
+    let cls = '';
+    let label = '';
+    if (v.administered) { cls = 'done'; label = '✅ Administered'; }
+    else if (diff < -1) { cls = 'overdue'; label = '⚠️ Overdue'; }
+    else if (diff <= 0) { cls = 'overdue'; label = '🔴 Due Today/Overdue'; }
+    else if (diff <= 7) { cls = 'upcoming'; label = `📅 In ${diff} day(s)`; }
+    else { label = `📅 ${v.date}`; }
+    
+    return `<div class="reminder-item ${cls}">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <strong>${v.name}</strong>
+          <div><small>${v.dose || ''}</small></div>
+          <div><small class="text-muted">${label}</small></div>
+        </div>
+        <div class="d-flex gap-1">
+          ${!v.administered ? `<button class="btn btn-farm btn-farm-sm" onclick="markVaccineAdmin('${v.id}')"><i class="bi bi-check"></i></button>` : ''}
+          <button class="btn btn-danger-farm btn-sm" onclick="deleteVaccine('${v.id}')"><i class="bi bi-trash"></i></button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function markVaccineAdmin(id) {
+  const vaccines = getBatchData(LS_KEYS.vaccines);
+  const v = vaccines.find(x => x.id === id);
+  if (v) v.administered = true;
+  saveBatchData(LS_KEYS.vaccines, vaccines);
+  showToast('Marked as administered!');
+  renderAll();
+}
+
+function deleteVaccine(id) {
+  if (!confirm('Delete this vaccine entry?')) return;
+  let vaccines = getBatchData(LS_KEYS.vaccines);
+  vaccines = vaccines.filter(v => v.id !== id && v.parentId !== id);
+  saveBatchData(LS_KEYS.vaccines, vaccines);
+  showToast('Deleted', 'danger');
+  renderAll();
+}
+
+// ==================== STOCK TRACKER ====================
+function saveStockEntry(e, type) {
+  e.preventDefault();
+  const batch = getActiveBatch();
+  if (!batch) return;
+  
+  const stock = getBatchData(LS_KEYS.stockEntries);
+  
+  let entry = { id: genId(), type, date: '' };
+  
+  if (type === 'sold') {
+    entry.date = document.getElementById('stockSoldDate').value;
+    entry.quantity = parseInt(document.getElementById('stockSoldQty').value) || 0;
+    entry.pricePerBird = parseFloat(document.getElementById('stockSoldPrice').value) || 0;
+    entry.buyer = document.getElementById('stockSoldBuyer').value.trim();
+  } else if (type === 'consumed') {
+    entry.date = document.getElementById('stockConDate').value;
+    entry.quantity = parseInt(document.getElementById('stockConQty').value) || 0;
+    entry.pricePerBird = 650;
+    entry.buyer = '';
+  } else if (type === 'restock') {
+    entry.date = document.getElementById('stockResDate').value;
+    entry.quantity = parseInt(document.getElementById('stockResQty').value) || 0;
+    entry.costPerChick = parseFloat(document.getElementById('stockResCost').value) || 0;
+  }
+  
+  stock.push(entry);
+  saveBatchData(LS_KEYS.stockEntries, stock);
+  showToast(`${type.charAt(0).toUpperCase() + type.slice(1)} entry saved!`);
+  
+  // Reset form fields
+  if (type === 'sold') {
+    document.getElementById('stockSoldQty').value = '';
+    document.getElementById('stockSoldBuyer').value = '';
+  } else if (type === 'consumed') {
+    document.getElementById('stockConQty').value = '';
+  } else {
+    document.getElementById('stockResQty').value = '';
+  }
+  
+  renderAll();
+}
+
+function renderStockTable() {
+  const batch = getActiveBatch();
+  if (!batch) return;
+  
+  const stock = getBatchData(LS_KEYS.stockEntries);
+  const sorted = [...stock].sort((a, b) => b.date.localeCompare(a.date));
+  const tbody = document.getElementById('stockTableBody');
+  
+  if (sorted.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-3">No stock entries yet</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = sorted.map((s, i) => {
+    let typeBadge = '';
+    let details = '';
+    if (s.type === 'sold') {
+      typeBadge = '<span class="badge bg-success">Sold</span>';
+      details = `${s.pricePerBird} KES/bird`;
+      if (s.buyer) details += `<br><small>${s.buyer}</small>`;
+      details += `<br><em>Total: ${(s.quantity * s.pricePerBird).toLocaleString()} KES</em>`;
+    } else if (s.type === 'consumed') {
+      typeBadge = '<span class="badge bg-warning text-dark">Own Use</span>';
+      details = `Valued at 650 KES/bird<br><em>Total: ${(s.quantity * 650).toLocaleString()} KES</em>`;
+    } else {
+      typeBadge = '<span class="badge bg-info">Restock</span>';
+      details = s.costPerChick ? `${s.costPerChick} KES/chick<br><em>Total: ${(s.quantity * s.costPerChick).toLocaleString()} KES</em>` : 'Added to flock';
+    }
+    
+    return `<tr>
+      <td class="text-nowrap">${s.date}</td>
+      <td>${typeBadge}</td>
+      <td><strong>${s.quantity}</strong></td>
+      <td><small>${details}</small></td>
+      <td><button class="btn btn-danger-farm btn-sm" onclick="deleteStock(${i})"><i class="bi bi-trash"></i></button></td>
+    </tr>`;
+  }).join('');
+}
+
+function deleteStock(idx) {
+  if (!confirm('Delete this stock entry?')) return;
+  const stock = getBatchData(LS_KEYS.stockEntries);
+  const sorted = [...stock].sort((a, b) => b.date.localeCompare(a.date));
+  const entry = sorted[idx];
+  const realIdx = stock.findIndex(s => s.id === entry.id);
+  if (realIdx >= 0) stock.splice(realIdx, 1);
+  saveBatchData(LS_KEYS.stockEntries, stock);
+  showToast('Entry deleted', 'danger');
+  renderAll();
+}
+
+// ==================== EXPENSE LEDGER ====================
+function saveExpense(e) {
+  e.preventDefault();
+  const batch = getActiveBatch();
+  if (!batch) return;
+  
+  const expenses = getBatchData(LS_KEYS.expenses);
+  
+  const entry = {
+    id: genId(),
+    date: document.getElementById('expDate').value,
+    category: document.getElementById('expCategory').value,
+    amount: parseFloat(document.getElementById('expAmount').value) || 0,
+    description: document.getElementById('expDesc').value.trim()
+  };
+  
+  expenses.push(entry);
+  saveBatchData(LS_KEYS.expenses, expenses);
+  showToast('Expense recorded!');
+  document.getElementById('expAmount').value = '';
+  document.getElementById('expDesc').value = '';
+  renderAll();
+}
+
+function renderExpenseTable() {
+  const batch = getActiveBatch();
+  if (!batch) return;
+  
+  let expenses = getBatchData(LS_KEYS.expenses);
+  
+  // Apply filters
+  const catFilter = document.getElementById('expFilterCat').value;
+  const fromFilter = document.getElementById('expFilterFrom').value;
+  const toFilter = document.getElementById('expFilterTo').value;
+  
+  let filtered = [...expenses];
+  if (catFilter) filtered = filtered.filter(e => e.category === catFilter);
+  if (fromFilter) filtered = filtered.filter(e => e.date >= fromFilter);
+  if (toFilter) filtered = filtered.filter(e => e.date <= toFilter);
+  
+  filtered.sort((a, b) => b.date.localeCompare(a.date));
+  
+  const tbody = document.getElementById('expenseTableBody');
+  const tfoot = document.getElementById('expenseTableFoot');
+  
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-3">No expenses found</td></tr>';
+    tfoot.innerHTML = '';
+    return;
+  }
+  
+  tbody.innerHTML = filtered.map((e, i) => {
+    const realIdx = expenses.findIndex(x => x.id === e.id);
+    return `<tr>
+      <td class="text-nowrap">${e.date}</td>
+      <td><span class="badge bg-secondary">${e.category}</span></td>
+      <td class="fw-bold">${e.amount.toLocaleString()}</td>
+      <td><small>${e.description || ''}</small></td>
+      <td><button class="btn btn-danger-farm btn-sm" onclick="deleteExpense(${realIdx})"><i class="bi bi-trash"></i></button></td>
+    </tr>`;
+  }).join('');
+  
+  const total = filtered.reduce((sum, e) => sum + e.amount, 0);
+  tfoot.innerHTML = `<tr class="table-active"><td colspan="2" class="fw-bold">TOTAL</td><td class="fw-bold">${total.toLocaleString()} KES</td><td colspan="2"></td></tr>`;
+}
+
+function deleteExpense(idx) {
+  if (!confirm('Delete this expense?')) return;
+  const expenses = getBatchData(LS_KEYS.expenses);
+  if (idx >= 0 && idx < expenses.length) expenses.splice(idx, 1);
+  saveBatchData(LS_KEYS.expenses, expenses);
+  showToast('Expense deleted', 'danger');
+  renderAll();
+}
+
+// ==================== P&L SUMMARY ====================
+let plView = 'current';
+
+function setPLView(view) {
+  plView = view;
+  const container = document.getElementById('plViewToggle');
+  container.querySelectorAll('.btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.val === view);
+  });
+  renderPL();
+}
+
+function renderPL() {
+  const batch = getActiveBatch();
+  if (!batch) return;
+  
+  let revenue = 0;
+  let cashSales = 0;
+  let ownUse = 0;
+  let expensesTotal = 0;
+  let birdsProduced = 0;
+  
+  if (plView === 'current') {
+    const stock = getBatchData(LS_KEYS.stockEntries);
+    const expenses = getBatchData(LS_KEYS.expenses);
+    
+    cashSales = stock.filter(s => s.type === 'sold').reduce((sum, s) => sum + (s.quantity * (s.pricePerBird || 0)), 0);
+    const consumedQty = stock.filter(s => s.type === 'consumed').reduce((sum, s) => sum + s.quantity, 0);
+    ownUse = consumedQty * 650;
+    revenue = cashSales + ownUse;
+    expensesTotal = expenses.reduce((sum, e) => sum + e.amount, 0);
+    
+    // Birds produced = sold + consumed + current live
+    const soldQty = stock.filter(s => s.type === 'sold').reduce((sum, s) => sum + s.quantity, 0);
+    const currentLive = calcLiveCount(batch);
+    birdsProduced = soldQty + consumedQty + currentLive;
+  } else {
+    // All time across all batches
+    const batches = getBatches();
+    const allLogs = loadData(LS_KEYS.dailyLogs) || {};
+    const allStock = loadData(LS_KEYS.stockEntries) || {};
+    const allExpenses = loadData(LS_KEYS.expenses) || {};
+    
+    batches.forEach(b => {
+      const stock = allStock[b.id] || [];
+      const expenses = allExpenses[b.id] || [];
+      
+      cashSales += stock.filter(s => s.type === 'sold').reduce((sum, s) => sum + (s.quantity * (s.pricePerBird || 0)), 0);
+      const consumedQty = stock.filter(s => s.type === 'consumed').reduce((sum, s) => sum + s.quantity, 0);
+      ownUse += consumedQty * 650;
+      expensesTotal += expenses.reduce((sum, e) => sum + e.amount, 0);
+      
+      const soldQty = stock.filter(s => s.type === 'sold').reduce((sum, s) => sum + s.quantity, 0);
+      // For archived batches, all birds are "produced"
+      if (b.archived) {
+        birdsProduced += (b.initialChicks || 0) + stock.filter(s => s.type === 'restock').reduce((sum, s) => sum + s.quantity, 0);
+      } else {
+        const currentLive = calcLiveCountForBatch(b, allStock[b.id] || [], allLogs[b.id] || []);
+        birdsProduced += soldQty + consumedQty + currentLive;
+      }
+    });
+    revenue = cashSales + ownUse;
+  }
+  
+  const net = revenue - expensesTotal;
+  const costPerBird = birdsProduced > 0 ? Math.round(expensesTotal / birdsProduced) : 0;
+  const revPerBird = birdsProduced > 0 ? Math.round(revenue / birdsProduced) : 0;
+  
+  document.getElementById('plRevenue').textContent = revenue.toLocaleString();
+  document.getElementById('plExpenses').textContent = expensesTotal.toLocaleString();
+  document.getElementById('plNet').textContent = net.toLocaleString();
+  document.getElementById('plCostPerBird').textContent = costPerBird.toLocaleString();
+  document.getElementById('plRevPerBird').textContent = revPerBird.toLocaleString();
+  document.getElementById('plTotalBirds').textContent = birdsProduced.toLocaleString();
+  
+  document.getElementById('plCashSales').textContent = cashSales.toLocaleString() + ' KES';
+  document.getElementById('plOwnUse').textContent = ownUse.toLocaleString() + ' KES';
+  document.getElementById('plTotalRev').textContent = revenue.toLocaleString() + ' KES';
+  
+  // Net styling
+  const netBox = document.getElementById('plNetBox');
+  netBox.className = 'stat-box ' + (net >= 0 ? '' : 'danger-box');
+  document.getElementById('plNet').className = 'stat-value ' + (net >= 0 ? 'pl-positive' : 'pl-negative');
+  
+  // Expense breakdown
+  let allExpenses = [];
+  if (plView === 'current') {
+    allExpenses = getBatchData(LS_KEYS.expenses);
+  } else {
+    const allExp = loadData(LS_KEYS.expenses) || {};
+    getBatches().forEach(b => { if (allExp[b.id]) allExpenses = allExpenses.concat(allExp[b.id]); });
+  }
+  
+  const categories = {};
+  allExpenses.forEach(e => {
+    categories[e.category] = (categories[e.category] || 0) + e.amount;
+  });
+  
+  const breakdownEl = document.getElementById('plExpenseBreakdown');
+  if (Object.keys(categories).length === 0) {
+    breakdownEl.innerHTML = '<p class="text-muted text-center mb-0">No expenses recorded.</p>';
+  } else {
+    breakdownEl.innerHTML = Object.entries(categories)
+      .sort((a, b) => b[1] - a[1])
+      .map(([cat, amt]) => {
+        const pct = expensesTotal > 0 ? Math.round((amt / expensesTotal) * 100) : 0;
+        return `<div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-secondary">${cat}</span>
+            <span>${amt.toLocaleString()} KES</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <div class="progress" style="width:80px;height:8px;">
+              <div class="progress-bar bg-success" style="width:${pct}%"></div>
+            </div>
+            <small class="text-muted">${pct}%</small>
+          </div>
+        </div>`;
+      }).join('');
+  }
+}
+
+function calcLiveCountForBatch(batch, stock, logs) {
+  let count = batch.initialChicks;
+  stock.filter(s => s.type === 'restock').forEach(s => { count += s.quantity; });
+  stock.filter(s => s.type === 'sold' || s.type === 'consumed').forEach(s => { count -= s.quantity; });
+  logs.forEach(l => { if (l.mortality) count -= parseInt(l.mortality) || 0; });
+  const sortedLogs = [...logs].sort((a, b) => b.date.localeCompare(a.date));
+  if (sortedLogs.length > 0 && sortedLogs[0].liveCount) {
+    count = parseInt(sortedLogs[0].liveCount);
+  }
+  return Math.max(0, count);
+}
+
+// ==================== BATCH MANAGEMENT ====================
+function createBatch(e) {
+  e.preventDefault();
+  const batches = getBatches();
+  
+  const batch = {
+    id: genId(),
+    startDate: document.getElementById('batchStartDate').value,
+    initialChicks: parseInt(document.getElementById('batchChicks').value) || 0,
+    costPerChick: parseFloat(document.getElementById('batchCostPerChick').value) || 0,
+    supplier: document.getElementById('batchSupplier').value.trim(),
+    label: `Batch ${batches.length + 1}`,
+    archived: false,
+    createdAt: new Date().toISOString()
+  };
+  
+  batches.push(batch);
+  saveBatches(batches);
+  setActiveBatchId(batch.id);
+  
+  showToast(`Batch "${batch.label}" created!`);
+  document.getElementById('batchChicks').value = '';
+  document.getElementById('batchSupplier').value = '';
+  renderAll();
+}
+
+function renderBatchManagement() {
+  const batches = getBatches();
+  const activeId = getActiveBatchId();
+  const active = batches.find(b => b.id === activeId);
+  const archived = batches.filter(b => b.archived);
+  
+  // Active batch info
+  const activeInfo = document.getElementById('activeBatchInfo');
+  if (active) {
+    const count = calcLiveCount(active);
+    const age = getBatchAgeDays(active);
+    const status = getBatchStatus(active);
+    activeInfo.innerHTML = `
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <h6 class="fw-bold mb-1">${active.label}</h6>
+          <p class="mb-1"><small class="text-muted">Started: ${active.startDate} | Supplier: ${active.supplier || '—'}</small></p>
+          <p class="mb-1"><small>Initial: ${active.initialChicks} chicks | Cost: ${active.costPerChick || 0} KES/chick</small></p>
+        </div>
+        <span class="status-badge ${status.class}" style="width:auto;padding:4px 12px;font-size:0.75rem;">${status.text}</span>
+      </div>
+      <hr>
+      <div class="row g-2 text-center">
+        <div class="col-4"><div class="fw-bold">${count}</div><small class="text-muted">Live Birds</small></div>
+        <div class="col-4"><div class="fw-bold">${age}</div><small class="text-muted">Days Old</small></div>
+        <div class="col-4"><div class="fw-bold">${active.costPerChick * active.initialChicks}</div><small class="text-muted">Initial Cost</small></div>
+      </div>
+      <div class="mt-2 d-flex gap-2">
+        ${!active.archived ? `<button class="btn btn-farm-outline btn-sm flex-fill" onclick="archiveBatch('${active.id}')"><i class="bi bi-archive me-1"></i>Archive Batch</button>` : ''}
+        <button class="btn btn-farm-outline btn-sm flex-fill" onclick="exportCSV('all')"><i class="bi bi-download me-1"></i>Export All</button>
+      </div>
+    `;
+  } else {
+    activeInfo.innerHTML = '<p class="text-muted mb-0">No active batch. Create one above.</p>';
+  }
+  
+  // Archived batches
+  const archivedEl = document.getElementById('archivedBatchList');
+  if (archived.length === 0) {
+    archivedEl.innerHTML = '<p class="text-muted mb-0">No archived batches.</p>';
+  } else {
+    archivedEl.innerHTML = archived.map(b => {
+      const count = calcLiveCount(b);
+      return `<div class="d-flex justify-content-between align-items-center mb-2 p-2 rounded" style="background:#f5f5f5;">
+        <div>
+          <strong>${b.label}</strong> <small class="text-muted">(${b.startDate})</small>
+          <br><small class="text-muted">${b.initialChicks} chicks | ${count} live (at archive)</small>
+        </div>
+        <div class="d-flex gap-1">
+          <button class="btn btn-farm-outline btn-farm-sm" onclick="activateBatch('${b.id}')">Activate</button>
+          <button class="btn btn-danger-farm btn-sm" onclick="deleteBatch('${b.id}')"><i class="bi bi-trash"></i></button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function archiveBatch(id) {
+  if (!confirm('Archive this batch? It will be moved to history.')) return;
+  const batches = getBatches();
+  const batch = batches.find(b => b.id === id);
+  if (batch) batch.archived = true;
+  saveBatches(batches);
+  
+  // Activate next available batch
+  const next = batches.find(b => !b.archived);
+  if (next) setActiveBatchId(next.id);
+  
+  showToast('Batch archived');
+  renderAll();
+}
+
+function activateBatch(id) {
+  setActiveBatchId(id);
+  showToast('Batch activated');
+  renderAll();
+}
+
+function deleteBatch(id) {
+  if (!confirm('⚠️ PERMANENTLY delete this batch and ALL its data? This cannot be undone!')) return;
+  if (!confirm('Are you really sure? All logs, expenses, stock entries will be lost.')) return;
+  
+  let batches = getBatches();
+  batches = batches.filter(b => b.id !== id);
+  saveBatches(batches);
+  
+  // Clean up associated data
+  [LS_KEYS.dailyLogs, LS_KEYS.vaccines, LS_KEYS.stockEntries, LS_KEYS.expenses].forEach(key => {
+    const all = loadData(key) || {};
+    delete all[id];
+    saveData(key, all);
+  });
+  
+  if (getActiveBatchId() === id) {
+    const next = batches.find(b => !b.archived);
+    setActiveBatchId(next ? next.id : '');
+  }
+  
+  showToast('Batch permanently deleted', 'danger');
+  renderAll();
+}
+
+function confirmResetAll() {
+  if (!confirm('⚠️ RESET ALL DATA? This will delete everything!')) return;
+  if (!confirm('FINAL WARNING: All batches, logs, expenses, vaccines will be PERMANENTLY deleted. Continue?')) return;
+  
+  Object.values(LS_KEYS).forEach(key => localStorage.removeItem(key));
+  showToast('All data reset', 'danger');
+  renderAll();
+}
+
+// ==================== CSV EXPORT ====================
+function exportCSV(section) {
+  const batch = getActiveBatch();
+  let csv = '';
+  let filename = '';
+  
+  if (section === 'dailyLog') {
+    const logs = getBatchData(LS_KEYS.dailyLogs);
+    csv = 'Date,Live Count,Mortality,Cause,Avg Weight (kg),Feed Type,Feed Amount (kg),Sawdust Changed,Notes\n';
+    logs.sort((a, b) => a.date.localeCompare(b.date)).forEach(l => {
+      csv += `${l.date},${l.liveCount},${l.mortality || 0},"${(l.mortCause || '').replace(/"/g, '""')}",${l.avgWeight || ''},${l.feedType || ''},${l.feedAmount || 0},${l.sawdust || ''},"${(l.notes || '').replace(/"/g, '""')}"\n`;
+    });
+    filename = `daily_log_${batch ? batch.label : 'all'}.csv`;
+  } else if (section === 'vaccines') {
+    const vaccines = getBatchData(LS_KEYS.vaccines);
+    csv = 'Date,Name,Dose,Repeat (days),Administered\n';
+    vaccines.forEach(v => {
+      csv += `${v.date},"${v.name}","${(v.dose || '').replace(/"/g, '""')}",${v.repeat},${v.administered ? 'Yes' : 'No'}\n`;
+    });
+    filename = `vaccines_${batch ? batch.label : 'all'}.csv`;
+  } else if (section === 'stock') {
+    const stock = getBatchData(LS_KEYS.stockEntries);
+    csv = 'Date,Type,Quantity,Price/Bird (KES),Buyer,Cost/Chick\n';
+    stock.forEach(s => {
+      csv += `${s.date},${s.type},${s.quantity},${s.pricePerBird || ''},"${(s.buyer || '').replace(/"/g, '""')}",${s.costPerChick || ''}\n`;
+    });
+    filename = `stock_${batch ? batch.label : 'all'}.csv`;
+  } else if (section === 'expenses') {
+    const expenses = getBatchData(LS_KEYS.expenses);
+    csv = 'Date,Category,Amount (KES),Description\n';
+    expenses.forEach(e => {
+      csv += `${e.date},${e.category},${e.amount},"${(e.description || '').replace(/"/g, '""')}"\n`;
+    });
+    filename = `expenses_${batch ? batch.label : 'all'}.csv`;
+  } else if (section === 'pl') {
+    csv = 'P&L Summary\n';
+    csv += `View,${plView}\n`;
+    csv += `Revenue,${document.getElementById('plRevenue').textContent}\n`;
+    csv += `Expenses,${document.getElementById('plExpenses').textContent}\n`;
+    csv += `Net Profit/Loss,${document.getElementById('plNet').textContent}\n`;
+    csv += `Cost per Bird,${document.getElementById('plCostPerBird').textContent}\n`;
+    csv += `Revenue per Bird,${document.getElementById('plRevPerBird').textContent}\n`;
+    csv += `Birds Produced,${document.getElementById('plTotalBirds').textContent}\n`;
+    filename = `pl_summary_${plView}.csv`;
+  } else if (section === 'all') {
+    // Export everything
+    const batches = getBatches();
+    csv = '=== BATCHES ===\n';
+    csv += 'ID,Label,Start Date,Initial Chicks,Cost/Chick,Supplier,Archived\n';
+    batches.forEach(b => {
+      csv += `${b.id},"${b.label}",${b.startDate},${b.initialChicks},${b.costPerChick},"${(b.supplier || '').replace(/"/g, '""')}",${b.archived}\n`;
+    });
+    
+    batches.forEach(b => {
+      const allLogs = loadData(LS_KEYS.dailyLogs) || {};
+      const logs = allLogs[b.id] || [];
+      if (logs.length > 0) {
+        csv += `\n=== DAILY LOG: ${b.label} ===\n`;
+        csv += 'Date,Live Count,Mortality,Cause,Avg Weight,Feed Type,Feed Amount,Sawdust,Notes\n';
+        logs.sort((a, c) => a.date.localeCompare(c.date)).forEach(l => {
+          csv += `${l.date},${l.liveCount},${l.mortality || 0},"${(l.mortCause || '').replace(/"/g, '""')}",${l.avgWeight || ''},${l.feedType || ''},${l.feedAmount || 0},${l.sawdust || ''},"${(l.notes || '').replace(/"/g, '""')}"\n`;
+        });
+      }
+    });
+    
+    batches.forEach(b => {
+      const allStock = loadData(LS_KEYS.stockEntries) || {};
+      const stock = allStock[b.id] || [];
+      if (stock.length > 0) {
+        csv += `\n=== STOCK: ${b.label} ===\n`;
+        csv += 'Date,Type,Quantity,Price/Bird,Buyer,Cost/Chick\n';
+        stock.forEach(s => {
+          csv += `${s.date},${s.type},${s.quantity},${s.pricePerBird || ''},"${(s.buyer || '').replace(/"/g, '""')}",${s.costPerChick || ''}\n`;
+        });
+      }
+    });
+    
+    batches.forEach(b => {
+      const allExp = loadData(LS_KEYS.expenses) || {};
+      const expenses = allExp[b.id] || [];
+      if (expenses.length > 0) {
+        csv += `\n=== EXPENSES: ${b.label} ===\n`;
+        csv += 'Date,Category,Amount,Description\n';
+        expenses.forEach(e => {
+          csv += `${e.date},${e.category},${e.amount},"${(e.description || '').replace(/"/g, '""')}"\n`;
+        });
+      }
+    });
+    
+    filename = 'poultry_farm_full_export.csv';
+  }
+  
+  // Download
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(link.href);
+  showToast('CSV exported!');
+}
+
+// ==================== RENDER ALL ====================
+function renderAll() {
+  const batch = checkBatchState();
+  populateBatchSelectors();
+  
+  if (batch) {
+    renderDashboard();
+    renderDailyLog();
+    renderVaccines();
+    renderStockTable();
+    renderExpenseTable();
+    renderPL();
+  }
+  
+  renderBatchManagement();
+}
+
+function refreshAll() {
+  renderAll();
+}
+
+// ==================== INIT ====================
+function init() {
+  // Set header date
+  const now = new Date();
+  document.getElementById('headerDate').textContent = now.toLocaleDateString('en-KE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  
+  // Set default dates
+  document.getElementById('dlDate').value = todayStr();
+  document.getElementById('vacDate').value = todayStr();
+  document.getElementById('expDate').value = todayStr();
+  document.getElementById('stockSoldDate').value = todayStr();
+  document.getElementById('stockConDate').value = todayStr();
+  document.getElementById('stockResDate').value = todayStr();
+  document.getElementById('batchStartDate').value = todayStr();
+  
+  // Auto-select feed type
+  const batch = getActiveBatch();
+  if (batch) {
+    const feedType = getFeedTypeForAge(batch);
+    document.getElementById('dlFeedType').value = feedType;
+  }
+  
+  renderAll();
+}
+
+// Handle feed type change to update suggested amount
+document.getElementById('dlFeedType').addEventListener('change', function() {
+  const batch = getActiveBatch();
+  if (!batch) return;
+  const count = calcLiveCount(batch);
+  const rate = getFeedRate(this.value);
+  document.getElementById('dlFeedSuggest').textContent = `Suggested: ${(count * rate).toFixed(1)} kg (${count} birds × ${rate} kg)`;
+  document.getElementById('dlFeedAmount').value = (count * rate).toFixed(1);
+});
+
+// Handle live count change to update feed suggestion
+document.getElementById('dlLiveCount').addEventListener('input', function() {
+  const feedType = document.getElementById('dlFeedType').value;
+  const count = parseInt(this.value) || 0;
+  const rate = getFeedRate(feedType);
+  document.getElementById('dlFeedSuggest').textContent = `Suggested: ${(count * rate).toFixed(1)} kg (${count} birds × ${rate} kg)`;
+  document.getElementById('dlFeedAmount').value = (count * rate).toFixed(1);
+});
+
+// Initialize
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

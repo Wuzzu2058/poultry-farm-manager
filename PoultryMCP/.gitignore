@@ -1,0 +1,6 @@
+node_modules/
+.env
+*.log
+farm_data.json
+scratch/
+.DS_Store

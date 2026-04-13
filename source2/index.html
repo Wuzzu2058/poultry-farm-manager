@@ -1,0 +1,1099 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Poultry Farm Manager - AI Enhanced</title> 
+    <script src="https://cdn.tailwindcss.com"></script> 
+    <style> 
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap'); 
+         
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f0f4f0; 
+            color: #1a2e1a; 
+            -webkit-tap-highlight-color: transparent; 
+        } 
+ 
+        .active-tab { 
+            background-color: #166534 !important; 
+            color: white !important; 
+        } 
+ 
+        input, select, textarea { 
+            font-size: 1.1rem !important; 
+            padding: 0.75rem !important; 
+        } 
+ 
+        .card { 
+            background: white; 
+            border-radius: 1rem; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
+        } 
+ 
+        button { 
+            min-height: 48px; 
+        } 
+ 
+        .status-growing { background-color: #dcfce7; color: #166534; } 
+        .status-ready { background-color: #fef9c3; color: #854d0e; border: 2px solid #eab308; } 
+        .status-restock { background-color: #fee2e2; color: #991b1b; } 
+ 
+        .ai-glow { 
+            box-shadow: 0 0 15px rgba(22, 101, 52, 0.2); 
+            border: 1px solid rgba(22, 101, 52, 0.3); 
+        } 
+ 
+        @keyframes shimmer { 
+            0% { background-position: -200% 0; } 
+            100% { background-position: 200% 0; } 
+        } 
+        .loading-shimmer { 
+            background: linear-gradient(90deg, #f0fdf4 25%, #dcfce7 50%, #f0fdf4 75%); 
+            background-size: 200% 100%; 
+            animation: shimmer 1.5s infinite; 
+        } 
+ 
+        @media print { 
+            .no-print { display: none; } 
+        } 
+    </style> 
+</head> 
+<body class="pb-24"> 
+ 
+    <!-- Top Navigation Header --> 
+    <header class="bg-green-800 text-white p-4 sticky top-0 z-50 shadow-md"> 
+        <div class="max-w-4xl mx-auto flex justify-between items-center"> 
+            <div> 
+                <h1 class="text-xl font-extrabold tracking-tight">POULTRY MANAGER ✨</h1> 
+                <p id="header-date" class="text-sm opacity-90"></p> 
+            </div> 
+            <div class="text-right"> 
+                <span id="header-batch-name" class="block text-xs font-bold uppercase tracking-widest opacity-75">No Active Batch</span> 
+                <span id="header-count" class="text-2xl font-black">0</span> 
+                <span class="text-xs uppercase">Birds</span> 
+            </div> 
+        </div> 
+    </header> 
+ 
+    <main class="max-w-4xl mx-auto p-4 space-y-6"> 
+ 
+        <!-- 1. DASHBOARD SECTION --> 
+        <section id="tab-dashboard" class="tab-content space-y-4"> 
+            <div id="status-card" class="card p-6 flex flex-col items-center text-center space-y-2 relative overflow-hidden"> 
+                <span id="batch-status-badge" class="px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wider">Loading...</span> 
+                <h2 class="text-4xl font-black" id="dash-age">0 Days</h2> 
+                <p class="text-gray-500 font-semibold">Current Batch Age</p> 
+                 
+                <div class="flex gap-2 mt-4 no-print"> 
+                    <button onclick="getAIInsight()" class="bg-green-100 text-green-800 px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-green-200 transition"> 
+                        <span>✨</span> Get AI Insight 
+                    </button> 
+                    <button onclick="playAIBriefing()" id="btn-tts" class="bg-blue-100 text-blue-800 px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-blue-200 transition"> 
+                        <span id="tts-icon">🔊</span> ✨ Daily Briefing 
+                    </button> 
+                </div> 
+            </div> 
+ 
+            <!-- AI Insight Display Box --> 
+            <div id="ai-insight-box" class="hidden card p-5 border-2 border-green-200 bg-green-50 animate-pulse-slow"> 
+                <div class="flex justify-between items-start mb-2"> 
+                    <h3 class="font-bold text-green-900 flex items-center gap-2"><span>✨</span> AI Advisor</h3> 
+                    <button onclick="closeAIBox()" class="text-gray-400 hover:text-gray-600">✕</button> 
+                </div> 
+                <div id="ai-insight-content" class="text-sm text-green-800 leading-relaxed whitespace-pre-wrap"></div> 
+            </div> 
+ 
+            <div class="grid grid-cols-2 gap-4"> 
+                <div class="card p-4 text-center"> 
+                    <p class="text-xs text-gray-500 uppercase font-bold">Total Sales</p> 
+                    <p class="text-xl font-bold text-green-700">KSh <span id="dash-revenue">0</span></p> 
+                </div> 
+                <div class="card p-4 text-center"> 
+                    <p class="text-xs text-gray-500 uppercase font-bold">Total Mortality</p> 
+                    <p class="text-xl font-bold text-red-600"><span id="dash-mortality">0</span> Birds</p> 
+                </div> 
+            </div> 
+ 
+            <div class="card p-4"> 
+                <h3 class="font-bold text-lg mb-3 flex items-center gap-2"> 
+                    <span>📅</span> Upcoming Vaccines (7 Days) 
+                </h3> 
+                <div id="dashboard-vaccines" class="space-y-2"> 
+                    <!-- Dynamic --> 
+                </div> 
+            </div> 
+        </section> 
+ 
+        <!-- 2. DAILY LOG SECTION --> 
+        <section id="tab-logs" class="tab-content hidden space-y-4"> 
+            <div class="card p-6"> 
+                <h2 class="text-2xl font-bold mb-4">Record Daily Activity</h2> 
+                <form id="daily-log-form" class="space-y-4"> 
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> 
+                        <div> 
+                            <label class="block text-sm font-bold text-gray-700">Date</label> 
+                            <input type="date" id="log-date" class="w-full border-2 border-gray-200 rounded-lg focus:border-green-500 outline-none" required> 
+                        </div> 
+                        <div> 
+                            <label class="block text-sm font-bold text-gray-700">Total Live Count Now</label> 
+                            <input type="number" id="log-count" class="w-full border-2 border-gray-200 rounded-lg" placeholder="Confirm total count"> 
+                        </div> 
+                        <div> 
+                            <label class="block text-sm font-bold text-gray-700">Mortality Today (Deaths)</label> 
+                            <input type="number" id="log-mortality" class="w-full border-2 border-gray-200 rounded-lg" value="0"> 
+                        </div> 
+                        <div> 
+                            <label class="block text-sm font-bold text-gray-700">Avg Weight (kg)</label> 
+                            <input type="number" step="0.01" id="log-weight" class="w-full border-2 border-gray-200 rounded-lg" placeholder="0.00"> 
+                        </div> 
+                    </div> 
+ 
+                    <div class="bg-green-50 p-4 rounded-xl border border-green-100"> 
+                        <div class="flex justify-between items-center mb-2"> 
+                            <h3 class="font-bold text-green-800">Feeding Assistant</h3> 
+                            <span id="feed-suggestion-badge" class="text-xs bg-green-200 text-green-800 px-2 py-1 rounded font-bold">Suggested</span> 
+                        </div> 
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> 
+                            <div> 
+                                <label class="block text-xs font-bold text-green-700">Feed Type</label> 
+                                <select id="log-feed-type" class="w-full border-none bg-transparent font-bold text-lg"> 
+                                    <option value="Chick Mash">Chick Mash (0-3 wks)</option> 
+                                    <option value="Grower Mash">Grower Mash (4-7 wks)</option> 
+                                    <option value="Finisher">Finisher (8+ wks)</option> 
+                                </select> 
+                            </div> 
+                            <div> 
+                                <label class="block text-xs font-bold text-green-700">Amount (kg)</label> 
+                                <input type="number" step="0.1" id="log-feed-qty" class="w-full border-none bg-transparent font-bold text-lg"> 
+                            </div> 
+                        </div> 
+                    </div> 
+ 
+                    <div class="flex items-center gap-3 p-2 bg-gray-50 rounded-lg"> 
+                        <input type="checkbox" id="log-sawdust" class="w-6 h-6 accent-green-600"> 
+                        <label for="log-sawdust" class="font-bold text-gray-700">Sawdust Changed Today?</label> 
+                    </div> 
+ 
+                    <div class="space-y-2"> 
+                        <div class="flex justify-between items-end"> 
+                            <label class="block text-sm font-bold text-gray-700">Notes & Observations</label> 
+                            <button type="button" onclick="checkSymptoms()" class="text-[10px] font-bold bg-purple-100 text-purple-700 px-2 py-1 rounded hover:bg-purple-200 transition"> 
+                                ✨ AI Symptom Check 
+                            </button> 
+                        </div> 
+                        <textarea id="log-notes" rows="2" class="w-full border-2 border-gray-200 rounded-lg" placeholder="Any behavior changes?"></textarea> 
+                    </div> 
+ 
+                    <button type="submit" class="w-full bg-green-700 text-white text-xl font-bold py-4 rounded-xl shadow-lg hover:bg-green-800 transition">SAVE DAILY LOG</button> 
+                </form> 
+            </div> 
+             
+            <div id="log-history" class="space-y-2 mt-6"> 
+                <!-- Log History cards will appear here --> 
+            </div> 
+        </section> 
+ 
+        <!-- 3. VACCINE SECTION --> 
+        <section id="tab-vaccines" class="tab-content hidden space-y-4"> 
+            <div class="card p-6"> 
+                <h2 class="text-2xl font-bold mb-4">Medical Schedule</h2> 
+                <form id="vaccine-form" class="space-y-4"> 
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> 
+                        <input type="date" id="vac-date" class="border-2 border-gray-200 rounded-lg" required> 
+                        <input type="text" id="vac-name" class="border-2 border-gray-200 rounded-lg" placeholder="Vaccine/Drug Name" required> 
+                        <input type="text" id="vac-desc" class="border-2 border-gray-200 rounded-lg" placeholder="Dose Description (e.g. 2ml/L)"> 
+                        <div class="flex items-center gap-2"> 
+                            <label class="text-xs font-bold">Repeat every</label> 
+                            <input type="number" id="vac-repeat" class="w-20 border-2 border-gray-200 rounded-lg" placeholder="0"> 
+                            <span class="text-xs font-bold">days</span> 
+                        </div> 
+                    </div> 
+                    <button type="submit" class="w-full bg-blue-700 text-white font-bold py-3 rounded-xl">+ ADD TO SCHEDULE</button> 
+                </form> 
+            </div> 
+ 
+            <div id="vaccine-list" class="space-y-3"> 
+                <!-- Dynamic List --> 
+            </div> 
+        </section> 
+ 
+        <!-- 4. STOCK & SALES SECTION --> 
+        <section id="tab-stock" class="tab-content hidden space-y-4"> 
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> 
+                <div class="card p-6"> 
+                    <h3 class="text-xl font-bold mb-4 text-green-800">Record Sales</h3> 
+                    <form id="sale-form" class="space-y-4"> 
+                        <input type="date" id="sale-date" class="w-full border-2 border-gray-200 rounded-lg" required> 
+                        <input type="number" id="sale-qty" class="w-full border-2 border-gray-200 rounded-lg" placeholder="Quantity Sold" required> 
+                        <input type="number" id="sale-price" class="w-full border-2 border-gray-200 rounded-lg" placeholder="Price per bird (KES)" value="650"> 
+                        <input type="text" id="sale-buyer" class="w-full border-2 border-gray-200 rounded-lg" placeholder="Buyer Name"> 
+                        <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 rounded-xl">RECORD SALE</button> 
+                    </form> 
+                </div> 
+ 
+                <div class="card p-6"> 
+                    <h3 class="text-xl font-bold mb-4 text-orange-800">Family Consumption</h3> 
+                    <form id="consume-form" class="space-y-4"> 
+                        <input type="date" id="consume-date" class="w-full border-2 border-gray-200 rounded-lg" required> 
+                        <input type="number" id="consume-qty" class="w-full border-2 border-gray-200 rounded-lg" placeholder="Quantity Eaten" required> 
+                        <p class="text-xs text-gray-500 italic">Valued at 650 KES for P&L tracking.</p> 
+                        <button type="submit" class="w-full bg-orange-600 text-white font-bold py-3 rounded-xl">RECORD CONSUMPTION</button> 
+                    </form> 
+                </div> 
+            </div> 
+ 
+            <div class="card p-6"> 
+                <h3 class="text-xl font-bold mb-4">Stock History</h3> 
+                <div id="stock-history" class="space-y-2"> 
+                    <!-- Dynamic --> 
+                </div> 
+            </div> 
+        </section> 
+ 
+        <!-- 5. EXPENSES SECTION --> 
+        <section id="tab-expenses" class="tab-content hidden space-y-4"> 
+            <div class="card p-6"> 
+                <h2 class="text-2xl font-bold mb-4">Expense Ledger</h2> 
+                <form id="expense-form" class="space-y-4"> 
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> 
+                        <input type="date" id="exp-date" class="border-2 border-gray-200 rounded-lg" required> 
+                        <select id="exp-category" class="border-2 border-gray-200 rounded-lg" required> 
+                            <option value="Feed">Feed</option> 
+                            <option value="Transport">Transport</option> 
+                            <option value="Sawdust">Sawdust</option> 
+                            <option value="Vet & Dosage">Vet & Dosage</option> 
+                            <option value="Labor">Labor</option> 
+                            <option value="Electricity">Electricity</option> 
+                            <option value="Misc">Misc</option> 
+                        </select> 
+                        <input type="number" id="exp-amount" class="border-2 border-gray-200 rounded-lg" placeholder="Amount (KES)" required> 
+                        <input type="text" id="exp-desc" class="border-2 border-gray-200 rounded-lg" placeholder="Description"> 
+                    </div> 
+                    <button type="submit" class="w-full bg-red-700 text-white font-bold py-3 rounded-xl">SAVE EXPENSE</button> 
+                </form> 
+            </div> 
+ 
+            <div class="card p-4 overflow-x-auto"> 
+                <table class="w-full text-sm text-left"> 
+                    <thead class="bg-gray-100 uppercase text-xs font-bold"> 
+                        <tr> 
+                            <th class="p-2">Date</th> 
+                            <th class="p-2">Category</th> 
+                            <th class="p-2">Amount</th> 
+                            <th class="p-2">Desc</th> 
+                        </tr> 
+                    </thead> 
+                    <tbody id="expense-table"> 
+                        <!-- Dynamic --> 
+                    </tbody> 
+                </table> 
+            </div> 
+        </section> 
+ 
+        <!-- 6. P&L SUMMARY SECTION --> 
+        <section id="tab-reports" class="tab-content hidden space-y-4"> 
+            <div class="card p-6 space-y-6"> 
+                <div class="flex justify-between items-center border-b pb-4"> 
+                    <h2 class="text-2xl font-bold">Batch Performance</h2> 
+                    <div class="flex gap-2"> 
+                        <button onclick="getAIFinancialAdvice()" class="bg-amber-100 text-amber-800 text-[10px] font-bold px-3 py-1 rounded flex items-center gap-1"> 
+                            <span>✨</span> AI Financial Review 
+                        </button> 
+                        <button onclick="exportToCSV()" class="bg-gray-200 text-[10px] font-bold px-3 py-1 rounded">Export CSV</button> 
+                    </div> 
+                </div> 
+ 
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8"> 
+                    <div class="space-y-4"> 
+                        <div class="flex justify-between"> 
+                            <span class="text-gray-600 font-bold">Cash Sales:</span> 
+                            <span class="font-bold" id="pl-cash-sales">0 KES</span> 
+                        </div> 
+                        <div class="flex justify-between"> 
+                            <span class="text-gray-600 font-bold">Household Value:</span> 
+                            <span class="font-bold" id="pl-consume-val">0 KES</span> 
+                        </div> 
+                        <div class="flex justify-between text-xl border-t pt-2 border-dashed"> 
+                            <span class="font-black text-green-800">Total Revenue:</span> 
+                            <span class="font-black text-green-800" id="pl-total-rev">0 KES</span> 
+                        </div> 
+                    </div> 
+ 
+                    <div class="space-y-4"> 
+                        <div class="flex justify-between"> 
+                            <span class="text-gray-600 font-bold">Chick Cost:</span> 
+                            <span class="font-bold" id="pl-chick-cost">0 KES</span> 
+                        </div> 
+                        <div class="flex justify-between"> 
+                            <span class="text-gray-600 font-bold">Operational Costs:</span> 
+                            <span class="font-bold" id="pl-ops-cost">0 KES</span> 
+                        </div> 
+                        <div class="flex justify-between text-xl border-t pt-2 border-dashed"> 
+                            <span class="font-black text-red-800">Total Expense:</span> 
+                            <span class="font-black text-red-800" id="pl-total-exp">0 KES</span> 
+                        </div> 
+                    </div> 
+                </div> 
+ 
+                <div class="bg-green-800 text-white p-6 rounded-2xl text-center"> 
+                    <p class="uppercase text-xs font-bold tracking-widest mb-1 opacity-80">Net Profit / Loss</p> 
+                    <h2 class="text-5xl font-black" id="pl-net">0 KES</h2> 
+                </div> 
+ 
+                <div class="grid grid-cols-2 gap-4"> 
+                    <div class="bg-gray-50 p-4 rounded-xl text-center"> 
+                        <p class="text-xs text-gray-500 font-bold">Cost Per Bird</p> 
+                        <p class="text-lg font-bold" id="pl-cost-per">0</p> 
+                    </div> 
+                    <div class="bg-gray-50 p-4 rounded-xl text-center"> 
+                        <p class="text-xs text-gray-500 font-bold">Revenue Per Bird</p> 
+                        <p class="text-lg font-bold" id="pl-rev-per">0</p> 
+                    </div> 
+                </div> 
+            </div> 
+        </section> 
+ 
+        <!-- 7. BATCH MANAGEMENT SECTION --> 
+        <section id="tab-settings" class="tab-content hidden space-y-4"> 
+            <div class="card p-6">
+                <h2 class="text-2xl font-bold mb-4">App Settings</h2>
+                <div class="space-y-4 mb-6 pb-6 border-b border-gray-100">
+                    <div>
+                        <label class="block text-sm font-bold">Gemini API Key</label>
+                        <input type="password" id="api-key-input" class="w-full border-2 border-gray-200 rounded-lg" placeholder="AIzaSy...">
+                        <p class="text-xs text-gray-500 mt-1">Stored securely in your browser. Required for AI features.</p>
+                    </div>
+                    <button onclick="saveApiKey()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl">SAVE API KEY</button>
+                </div>
+
+                <h2 class="text-2xl font-bold mb-4">Start New Batch</h2> 
+                <form id="new-batch-form" class="space-y-4"> 
+                    <div> 
+                        <label class="block text-sm font-bold">Batch Name / Year</label> 
+                        <input type="text" id="new-batch-name" class="w-full border-2 border-gray-200 rounded-lg" placeholder="Batch Oct 2023" required> 
+                    </div> 
+                    <div class="grid grid-cols-2 gap-4"> 
+                        <div> 
+                            <label class="block text-sm font-bold">Start Date</label> 
+                            <input type="date" id="new-batch-start" class="w-full border-2 border-gray-200 rounded-lg" required> 
+                        </div> 
+                        <div> 
+                            <label class="block text-sm font-bold">Initial Chicks</label> 
+                            <input type="number" id="new-batch-count" class="w-full border-2 border-gray-200 rounded-lg" required> 
+                        </div> 
+                    </div> 
+                    <div class="grid grid-cols-2 gap-4"> 
+                        <div> 
+                            <label class="block text-sm font-bold">Cost Per Chick (KES)</label> 
+                            <input type="number" id="new-batch-cost" class="w-full border-2 border-gray-200 rounded-lg" required> 
+                        </div> 
+                        <div> 
+                            <label class="block text-sm font-bold">Supplier</label> 
+                            <input type="text" id="new-batch-supplier" class="w-full border-2 border-gray-200 rounded-lg"> 
+                        </div> 
+                    </div> 
+                    <button type="submit" class="w-full bg-green-900 text-white font-bold py-4 rounded-xl">CREATE BATCH & SET AS ACTIVE</button> 
+                </form> 
+            </div> 
+ 
+            <div class="card p-6"> 
+                <h3 class="text-xl font-bold mb-4">Batch History</h3> 
+                <div id="batch-list" class="space-y-2"> 
+                    <!-- Dynamic --> 
+                </div> 
+            </div> 
+ 
+            <div class="p-4 text-center"> 
+                <button onclick="clearAllData()" class="text-red-500 text-xs underline font-bold uppercase tracking-widest">Delete All App Data Forever</button> 
+            </div> 
+        </section> 
+ 
+    </main> 
+ 
+    <!-- Bottom Navigation Bar --> 
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex no-print shadow-2xl"> 
+        <button onclick="showTab('dashboard')" data-tab="dashboard" class="flex-1 flex flex-col items-center py-3 text-gray-500 font-bold text-[10px] nav-item"> 
+            <span class="text-xl">🏠</span> HOME 
+        </button> 
+        <button onclick="showTab('logs')" data-tab="logs" class="flex-1 flex flex-col items-center py-3 text-gray-500 font-bold text-[10px] nav-item"> 
+            <span class="text-xl">📝</span> LOGS 
+        </button> 
+        <button onclick="showTab('vaccines')" data-tab="vaccines" class="flex-1 flex flex-col items-center py-3 text-gray-500 font-bold text-[10px] nav-item"> 
+            <span class="text-xl">💉</span> MEDS 
+        </button> 
+        <button onclick="showTab('stock')" data-tab="stock" class="flex-1 flex flex-col items-center py-3 text-gray-500 font-bold text-[10px] nav-item"> 
+            <span class="text-xl">🐔</span> STOCK 
+        </button> 
+        <button onclick="showTab('expenses')" data-tab="expenses" class="flex-1 flex flex-col items-center py-3 text-gray-500 font-bold text-[10px] nav-item"> 
+            <span class="text-xl">💰</span> CASH 
+        </button> 
+        <button onclick="showTab('reports')" data-tab="reports" class="flex-1 flex flex-col items-center py-3 text-gray-500 font-bold text-[10px] nav-item"> 
+            <span class="text-xl">📊</span> P&L 
+        </button> 
+        <button onclick="showTab('settings')" data-tab="settings" class="flex-1 flex flex-col items-center py-3 text-gray-500 font-bold text-[10px] nav-item"> 
+            <span class="text-xl">⚙️</span> BATCH 
+        </button> 
+    </nav> 
+ 
+    <script> 
+        // --- Gemini API Setup --- 
+        let apiKey = localStorage.getItem('poultry_api_key') || ""; 
+        const MODEL_TEXT = "gemini-2.5-flash-preview-09-2025"; 
+        const MODEL_TTS = "gemini-2.5-flash-preview-tts"; 
+ 
+        async function callGemini(payload, model = MODEL_TEXT) { 
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`; 
+             
+            for (let i = 0; i < 5; i++) { 
+                try { 
+                    const response = await fetch(url, { 
+                        method: 'POST', 
+                        headers: { 'Content-Type': 'application/json' }, 
+                        body: JSON.stringify(payload) 
+                    }); 
+                    if (!response.ok) throw new Error('API request failed'); 
+                    return await response.json(); 
+                } catch (e) { 
+                    const delay = Math.pow(2, i) * 1000; 
+                    await new Promise(resolve => setTimeout(resolve, delay)); 
+                } 
+            } 
+            throw new Error('All retries failed'); 
+        } 
+ 
+        window.saveApiKey = function() {
+            const key = document.getElementById('api-key-input').value.trim();
+            if (key) {
+                apiKey = key;
+                localStorage.setItem('poultry_api_key', key);
+                alert('API Key saved successfully!');
+            }
+        };
+
+        // --- Core State Management --- 
+        let state = { 
+            batches: {}, 
+            currentBatchId: null 
+        }; 
+ 
+        const STORAGE_KEY = 'poultry_app_data_v1'; 
+ 
+        function loadState() { 
+            const saved = localStorage.getItem(STORAGE_KEY); 
+            if (saved) { 
+                state = JSON.parse(saved); 
+            } 
+            
+            const savedApiKey = localStorage.getItem('poultry_api_key');
+            if (savedApiKey) {
+                const apiInputEl = document.getElementById('api-key-input');
+                if (apiInputEl) {
+                    apiInputEl.value = savedApiKey;
+                }
+            }
+
+            refreshUI(); 
+        } 
+ 
+        function saveState() { 
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); 
+            refreshUI(); 
+        } 
+ 
+        function getActiveBatch() { 
+            return state.batches[state.currentBatchId] || null; 
+        } 
+ 
+        // --- AI Logic --- 
+ 
+        function showAIBox(content) { 
+            const box = document.getElementById('ai-insight-box'); 
+            const display = document.getElementById('ai-insight-content'); 
+            box.classList.remove('hidden'); 
+            display.innerText = content; 
+            box.scrollIntoView({ behavior: 'smooth' }); 
+        } 
+ 
+        function closeAIBox() { 
+            document.getElementById('ai-insight-box').classList.add('hidden'); 
+        } 
+ 
+        async function getAIInsight() { 
+            if (!apiKey) return alert("Please set your Gemini API Key in the Batch tab first!");
+            const batch = getActiveBatch(); 
+            if (!batch) return alert("Start a batch first!"); 
+ 
+            const counts = calculateLiveCount(batch); 
+            const data = { 
+                ageDays: calculateAge(batch.startDate), 
+                liveCount: counts.live, 
+                mortality: calculateMortality(batch), 
+                initial: batch.initialCount, 
+                recentNotes: batch.logs.slice(-3).map(l => l.notes) 
+            }; 
+ 
+            showAIBox("✨ Consultando a la IA..."); 
+             
+            try { 
+                const prompt = `You are an expert poultry advisor for a small farm in Kenya.  
+                Batch data: Age ${data.ageDays} days, ${data.liveCount} birds left out of ${data.initial} initial.  
+                Mortality: ${data.mortality}. Recent notes: ${data.recentNotes.join(', ')}. 
+                Provide 3 concise, highly practical tips to improve survival and growth for today. Use a helpful, professional tone.`; 
+                 
+                const result = await callGemini({ 
+                    contents: [{ parts: [{ text: prompt }] }], 
+                    systemInstruction: { parts: [{ text: "Keep advice brief and localized for rural Kenya." }] } 
+                }); 
+                 
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text || "No insights available right now."; 
+                showAIBox(text); 
+            } catch (e) { 
+                showAIBox("Unable to reach AI advisor. Check connection."); 
+            } 
+        } 
+ 
+        async function playAIBriefing() { 
+            if (!apiKey) return alert("Please set your Gemini API Key in the Batch tab first!");
+            const batch = getActiveBatch(); 
+            if (!batch) return; 
+ 
+            const btn = document.getElementById('btn-tts'); 
+            const icon = document.getElementById('tts-icon'); 
+            btn.disabled = true; 
+            icon.innerText = "⏳"; 
+ 
+            try { 
+                const age = calculateAge(batch.startDate); 
+                const count = calculateLiveCount(batch).live; 
+                 
+                const prompt = `Prepare a short, upbeat 30-second daily briefing for a poultry caretaker.  
+                The batch is ${age} days old with ${count} birds. Remind them to check water, sawdust, and focus on bird behavior.  
+                Say it cheerfully. Start with 'Hello Manager!'`; 
+ 
+                const result = await callGemini({ 
+                    contents: [{ parts: [{ text: `Say in a cheerful voice: ${prompt}` }] }], 
+                    generationConfig: {  
+                        responseModalities: ["AUDIO"], 
+                        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Aoede" } } }  
+                    }, 
+                    model: MODEL_TTS 
+                }, MODEL_TTS); 
+ 
+                const audioData = result.candidates[0].content.parts[0].inlineData; 
+                const sampleRate = parseInt(audioData.mimeType.match(/rate=(\d+)/)?.[1] || 24000); 
+                const wavBlob = pcmToWav(base64ToUint8Array(audioData.data), sampleRate); 
+                const audio = new Audio(URL.createObjectURL(wavBlob)); 
+                audio.play(); 
+                 
+                audio.onended = () => { 
+                    btn.disabled = false; 
+                    icon.innerText = "🔊"; 
+                }; 
+            } catch (e) { 
+                console.error(e); 
+                alert("Audio briefing failed."); 
+                btn.disabled = false; 
+                icon.innerText = "🔊"; 
+            } 
+        } 
+ 
+        async function checkSymptoms() { 
+            if (!apiKey) return alert("Please set your Gemini API Key in the Batch tab first!");
+            const notes = document.getElementById('log-notes').value; 
+            if (!notes || notes.length < 5) return alert("Write some symptoms in the notes first!"); 
+ 
+            showAIBox("✨ AI checking symptoms..."); 
+             
+            try { 
+                const prompt = `A poultry farmer reports these observations: "${notes}".  
+                List 2 possible common causes and 2 immediate first-aid steps.  
+                Disclaimer: Include a note that this is not a professional vet diagnosis.`; 
+                 
+                const result = await callGemini({ 
+                    contents: [{ parts: [{ text: prompt }] }] 
+                }); 
+                 
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text || "No advice found."; 
+                showAIBox(text); 
+            } catch (e) { 
+                showAIBox("AI Symptom check unavailable."); 
+            } 
+        } 
+ 
+        async function getAIFinancialAdvice() { 
+            if (!apiKey) return alert("Please set your Gemini API Key in the Batch tab first!");
+            const batch = getActiveBatch(); 
+            if (!batch) return; 
+ 
+            const salesVal = batch.sales.reduce((sum, s) => sum + (s.qty * s.price), 0); 
+            const totalExp = (batch.initialCount * batch.costPerChick) + batch.expenses.reduce((sum, e) => sum + parseInt(e.amount), 0); 
+            const birdsProduced = batch.initialCount - calculateMortality(batch); 
+             
+            showAIBox("✨ Analyzing finances..."); 
+ 
+            try { 
+                const prompt = `Analyze these poultry batch finances:  
+                Birds Produced: ${birdsProduced}. Total Expenses: KES ${totalExp}. Total Sales: KES ${salesVal}.  
+                Cost per bird: KES ${totalExp / birdsProduced}. Revenue per bird: KES ${salesVal / birdsProduced}. 
+                How can this farmer improve their profit margin for the next batch? Suggest 2 specific areas.`; 
+                 
+                const result = await callGemini({ 
+                    contents: [{ parts: [{ text: prompt }] }] 
+                }); 
+                 
+                showAIBox(result.candidates?.[0]?.content?.parts?.[0]?.text); 
+            } catch (e) { 
+                showAIBox("Financial analyst is busy."); 
+            } 
+        } 
+ 
+        // --- Audio Helpers --- 
+        function base64ToUint8Array(base64) { 
+            const binaryString = atob(base64); 
+            const bytes = new Uint8Array(binaryString.length); 
+            for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i); 
+            return bytes; 
+        } 
+ 
+        function pcmToWav(pcmData, sampleRate) { 
+            const header = new ArrayBuffer(44); 
+            const view = new DataView(header); 
+            const writeString = (offset, string) => { for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i)); }; 
+            writeString(0, 'RIFF'); 
+            view.setUint32(4, 32 + pcmData.length, true); 
+            writeString(8, 'WAVE'); 
+            writeString(12, 'fmt '); 
+            view.setUint32(16, 16, true); 
+            view.setUint16(20, 1, true); 
+            view.setUint16(22, 1, true); 
+            view.setUint32(24, sampleRate, true); 
+            view.setUint32(28, sampleRate * 2, true); 
+            view.setUint16(32, 2, true); 
+            view.setUint16(34, 16, true); 
+            writeString(36, 'data'); 
+            view.setUint32(40, pcmData.length, true); 
+            const blob = new Blob([header, pcmData], { type: 'audio/wav' }); 
+            return blob; 
+        } 
+ 
+        // --- Logic Functions (Restored from previous version) --- 
+        function calculateAge(startDateStr) { 
+            const start = new Date(startDateStr); 
+            const now = new Date(); 
+            const diffTime = Math.abs(now - start); 
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+        } 
+ 
+        function calculateLiveCount(batch) { 
+            let count = parseInt(batch.initialCount); 
+            batch.logs.forEach(l => count -= parseInt(l.mortality || 0)); 
+            batch.sales.forEach(s => count -= parseInt(s.qty || 0)); 
+            batch.consumption.forEach(c => count -= parseInt(c.qty || 0)); 
+            return { live: Math.max(0, count) }; 
+        } 
+ 
+        function calculateRevenue(batch) { 
+            const sales = batch.sales.reduce((sum, s) => sum + (s.qty * s.price), 0); 
+            const consumption = batch.consumption.reduce((sum, c) => sum + (c.qty * 650), 0); 
+            return sales + consumption; 
+        } 
+ 
+        function calculateMortality(batch) { 
+            return batch.logs.reduce((sum, l) => sum + parseInt(l.mortality || 0), 0); 
+        } 
+ 
+        // --- UI Updates --- 
+        function refreshUI() { 
+            const batch = getActiveBatch(); 
+            document.getElementById('header-date').innerText = new Date().toLocaleDateString('en-KE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); 
+             
+            if (batch) { 
+                document.getElementById('header-batch-name').innerText = batch.name; 
+                const counts = calculateLiveCount(batch); 
+                document.getElementById('header-count').innerText = counts.live; 
+                document.getElementById('dash-age').innerText = calculateAge(batch.startDate) + " Days"; 
+                document.getElementById('dash-revenue').innerText = calculateRevenue(batch).toLocaleString(); 
+                document.getElementById('dash-mortality').innerText = calculateMortality(batch); 
+                 
+                updateDashboard(batch); 
+                updateHistory(batch); 
+                updateVaccineList(batch); 
+                updateStockList(batch); 
+                updateExpenseList(batch); 
+                updatePL(batch); 
+                updateFeedSuggestion(batch, counts.live); 
+            } 
+            updateBatchList(); 
+        } 
+ 
+        function showTab(tabId) { 
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden')); 
+            document.getElementById('tab-' + tabId).classList.remove('hidden'); 
+            document.querySelectorAll('.nav-item').forEach(btn => { 
+                btn.classList.remove('active-tab'); 
+                if (btn.dataset.tab === tabId) btn.classList.add('active-tab'); 
+            }); 
+        } 
+ 
+        function updateFeedSuggestion(batch, liveCount) { 
+            const ageDays = calculateAge(batch.startDate); 
+            let type = "Chick Mash"; 
+            let ratio = 0.1;  
+ 
+            if (ageDays > 21 && ageDays <= 49) { 
+                type = "Grower Mash"; 
+                ratio = 0.15; 
+            } else if (ageDays > 49) { 
+                type = "Finisher"; 
+                ratio = 0.2; 
+            } 
+ 
+            document.getElementById('log-feed-type').value = type; 
+            document.getElementById('log-feed-qty').value = (liveCount * ratio).toFixed(1); 
+        } 
+ 
+        function updateDashboard(batch) { 
+            const age = calculateAge(batch.startDate); 
+            const live = calculateLiveCount(batch).live; 
+            const badge = document.getElementById('batch-status-badge'); 
+             
+            badge.className = "px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wider "; 
+            if (live < 20) { 
+                badge.innerText = "Restock Needed"; 
+                badge.classList.add('status-restock'); 
+            } else if (age >= 90) { 
+                badge.innerText = "Ready for Sale"; 
+                badge.classList.add('status-ready'); 
+            } else { 
+                badge.innerText = "Growing Phase"; 
+                badge.classList.add('status-growing'); 
+            } 
+ 
+            const list = document.getElementById('dashboard-vaccines'); 
+            list.innerHTML = ""; 
+            const today = new Date(); 
+            const sevenDays = new Date(); 
+            sevenDays.setDate(today.getDate() + 7); 
+ 
+            const upcoming = batch.schedule.filter(v => { 
+                const d = new Date(v.date); 
+                return !v.done && d >= today && d <= sevenDays; 
+            }); 
+ 
+            if (upcoming.length === 0) { 
+                list.innerHTML = `<p class="text-sm text-gray-400 italic">No vaccines scheduled for this week.</p>`; 
+            } else { 
+                upcoming.forEach(v => { 
+                    list.innerHTML += ` 
+                        <div class="flex justify-between items-center bg-blue-50 p-3 rounded-lg border-l-4 border-blue-500"> 
+                            <div> 
+                                <p class="font-bold text-blue-900 text-sm">${v.name}</p> 
+                                <p class="text-[10px] text-blue-700 font-bold">${v.date}</p> 
+                            </div> 
+                            <button onclick="markVaccineDone('${v.id}')" class="text-xs bg-blue-600 text-white px-2 py-1 rounded">Done</button> 
+                        </div> 
+                    `; 
+                }); 
+            } 
+        } 
+ 
+        function updateHistory(batch) { 
+            const container = document.getElementById('log-history'); 
+            container.innerHTML = "<h3 class='font-bold text-gray-400 uppercase text-[10px] mb-2'>Recent Logs</h3>"; 
+            batch.logs.slice(-5).reverse().forEach(l => { 
+                container.innerHTML += ` 
+                    <div class="bg-white p-3 rounded-lg border flex justify-between items-center"> 
+                        <div> 
+                            <p class="font-bold text-xs">${l.date}</p> 
+                            <p class="text-[10px] text-gray-500">${l.feedType} • ${l.feedQty}kg • ${l.mortality || 0} died</p> 
+                        </div> 
+                        <div class="text-right"> 
+                            <p class="font-bold text-green-700 text-sm">${l.weight || '-'}kg</p> 
+                            <p class="text-[8px] uppercase text-gray-400 font-bold">Weight</p> 
+                        </div> 
+                    </div> 
+                `; 
+            }); 
+        } 
+ 
+        function updateVaccineList(batch) { 
+            const container = document.getElementById('vaccine-list'); 
+            container.innerHTML = ""; 
+            batch.schedule.sort((a,b) => new Date(a.date) - new Date(b.date)).forEach(v => { 
+                container.innerHTML += ` 
+                    <div class="card p-4 flex justify-between items-center ${v.done ? 'opacity-50 grayscale' : ''}"> 
+                        <div class="flex items-center gap-4"> 
+                            <input type="checkbox" ${v.done ? 'checked' : ''} onchange="markVaccineDone('${v.id}')" class="w-6 h-6"> 
+                            <div> 
+                                <p class="font-bold ${v.done ? 'line-through' : ''}">${v.name}</p> 
+                                <p class="text-xs text-gray-500">${v.date} • ${v.desc || 'No desc'}</p> 
+                            </div> 
+                        </div> 
+                        <button onclick="deleteVaccine('${v.id}')" class="text-red-300">🗑️</button> 
+                    </div> 
+                `; 
+            }); 
+        } 
+ 
+        function updateStockList(batch) { 
+            const container = document.getElementById('stock-history'); 
+            container.innerHTML = ""; 
+            const items = [ 
+                ...batch.sales.map(s => ({...s, type: 'SALE', color: 'text-green-700'})), 
+                ...batch.consumption.map(c => ({...c, type: 'EATEN', color: 'text-orange-700', buyer: 'Family'})) 
+            ].sort((a,b) => new Date(b.date) - new Date(a.date)); 
+ 
+            items.forEach(item => { 
+                container.innerHTML += ` 
+                    <div class="bg-white p-3 rounded-lg border flex justify-between items-center"> 
+                        <div> 
+                            <span class="text-[8px] font-bold ${item.color} border px-1 rounded">${item.type}</span> 
+                            <p class="font-bold text-xs mt-1">${item.date}</p> 
+                            <p class="text-[10px] text-gray-500">${item.qty} birds • ${item.buyer || '-'}</p> 
+                        </div> 
+                        <div class="text-right"> 
+                            <p class="font-bold text-sm">KSh ${item.price ? (item.price * item.qty).toLocaleString() : (650 * item.qty).toLocaleString()}</p> 
+                        </div> 
+                    </div> 
+                `; 
+            }); 
+        } 
+ 
+        function updateExpenseList(batch) { 
+            const tbody = document.getElementById('expense-table'); 
+            tbody.innerHTML = ""; 
+            batch.expenses.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(e => { 
+                tbody.innerHTML += ` 
+                    <tr class="border-b text-xs"> 
+                        <td class="p-2">${e.date}</td> 
+                        <td class="p-2 font-bold">${e.category}</td> 
+                        <td class="p-2">${parseInt(e.amount).toLocaleString()}</td> 
+                        <td class="p-2 text-gray-500">${e.desc || ''}</td> 
+                    </tr> 
+                `; 
+            }); 
+        } 
+ 
+        function updatePL(batch) { 
+            const salesVal = batch.sales.reduce((sum, s) => sum + (s.qty * s.price), 0); 
+            const consumeVal = batch.consumption.reduce((sum, c) => sum + (c.qty * 650), 0); 
+            const totalRev = salesVal + consumeVal; 
+ 
+            const chickCost = batch.initialCount * batch.costPerChick; 
+            const opsCost = batch.expenses.reduce((sum, e) => sum + parseInt(e.amount), 0); 
+            const totalExp = chickCost + opsCost; 
+ 
+            const net = totalRev - totalExp; 
+ 
+            document.getElementById('pl-cash-sales').innerText = salesVal.toLocaleString() + " KES"; 
+            document.getElementById('pl-consume-val').innerText = consumeVal.toLocaleString() + " KES"; 
+            document.getElementById('pl-total-rev').innerText = totalRev.toLocaleString() + " KES"; 
+             
+            document.getElementById('pl-chick-cost').innerText = chickCost.toLocaleString() + " KES"; 
+            document.getElementById('pl-ops-cost').innerText = opsCost.toLocaleString() + " KES"; 
+            document.getElementById('pl-total-exp').innerText = totalExp.toLocaleString() + " KES"; 
+             
+            document.getElementById('pl-net').innerText = net.toLocaleString() + " KES"; 
+            document.getElementById('pl-net').className = "text-5xl font-black " + (net >= 0 ? "text-white" : "text-red-300"); 
+ 
+            const birdsProduced = batch.initialCount - calculateMortality(batch); 
+            document.getElementById('pl-cost-per').innerText = (totalExp / (birdsProduced || 1)).toFixed(1); 
+            document.getElementById('pl-rev-per').innerText = (totalRev / (birdsProduced || 1)).toFixed(1); 
+        } 
+ 
+        function updateBatchList() { 
+            const container = document.getElementById('batch-list'); 
+            container.innerHTML = ""; 
+            Object.values(state.batches).forEach(b => { 
+                const isActive = state.currentBatchId === b.id; 
+                container.innerHTML += ` 
+                    <div class="p-4 border-2 rounded-xl flex justify-between items-center ${isActive ? 'border-green-600 bg-green-50' : 'border-gray-100'}"> 
+                        <div> 
+                            <p class="font-bold text-sm">${b.name}</p> 
+                            <p class="text-[10px] text-gray-500">Started: ${b.startDate} • ${b.initialCount} birds</p> 
+                        </div> 
+                        <div class="flex gap-2"> 
+                            ${!isActive ? `<button onclick="switchBatch('${b.id}')" class="bg-gray-200 text-[10px] px-2 py-1 rounded font-bold">Switch</button>` : '<span class="text-green-600 text-[10px] font-bold">ACTIVE</span>'} 
+                            <button onclick="deleteBatch('${b.id}')" class="text-red-200 hover:text-red-500">🗑️</button> 
+                        </div> 
+                    </div> 
+                `; 
+            }); 
+        } 
+ 
+        // --- Event Handlers --- 
+        document.getElementById('new-batch-form').onsubmit = (e) => { 
+            e.preventDefault(); 
+            const id = Date.now().toString(); 
+            state.batches[id] = { 
+                id: id, 
+                name: document.getElementById('new-batch-name').value, 
+                startDate: document.getElementById('new-batch-start').value, 
+                initialCount: document.getElementById('new-batch-count').value, 
+                costPerChick: document.getElementById('new-batch-cost').value, 
+                supplier: document.getElementById('new-batch-supplier').value, 
+                logs: [], 
+                schedule: [], 
+                expenses: [], 
+                sales: [], 
+                consumption: [] 
+            }; 
+            state.currentBatchId = id; 
+            saveState(); 
+            e.target.reset(); 
+            showTab('dashboard'); 
+        }; 
+ 
+        document.getElementById('daily-log-form').onsubmit = (e) => { 
+            e.preventDefault(); 
+            const batch = getActiveBatch(); 
+            if (!batch) return; 
+ 
+            batch.logs.push({ 
+                date: document.getElementById('log-date').value, 
+                mortality: document.getElementById('log-mortality').value, 
+                weight: document.getElementById('log-weight').value, 
+                feedType: document.getElementById('log-feed-type').value, 
+                feedQty: document.getElementById('log-feed-qty').value, 
+                sawdust: document.getElementById('log-sawdust').checked, 
+                notes: document.getElementById('log-notes').value 
+            }); 
+            saveState(); 
+            e.target.reset(); 
+            setToday('log-date'); 
+            alert("Log saved successfully!"); 
+        }; 
+ 
+        document.getElementById('vaccine-form').onsubmit = (e) => { 
+            e.preventDefault(); 
+            const batch = getActiveBatch(); 
+            if (!batch) return; 
+ 
+            batch.schedule.push({ 
+                id: Date.now().toString(), 
+                date: document.getElementById('vac-date').value, 
+                name: document.getElementById('vac-name').value, 
+                desc: document.getElementById('vac-desc').value, 
+                repeat: document.getElementById('vac-repeat').value, 
+                done: false 
+            }); 
+            saveState(); 
+            e.target.reset(); 
+        }; 
+ 
+        document.getElementById('sale-form').onsubmit = (e) => { 
+            e.preventDefault(); 
+            const batch = getActiveBatch(); 
+            batch.sales.push({ 
+                date: document.getElementById('sale-date').value, 
+                qty: document.getElementById('sale-qty').value, 
+                price: document.getElementById('sale-price').value, 
+                buyer: document.getElementById('sale-buyer').value 
+            }); 
+            saveState(); 
+            e.target.reset(); 
+        }; 
+ 
+        document.getElementById('consume-form').onsubmit = (e) => { 
+            e.preventDefault(); 
+            const batch = getActiveBatch(); 
+            batch.consumption.push({ 
+                date: document.getElementById('consume-date').value, 
+                qty: document.getElementById('consume-qty').value 
+            }); 
+            saveState(); 
+            e.target.reset(); 
+        }; 
+ 
+        document.getElementById('expense-form').onsubmit = (e) => { 
+            e.preventDefault(); 
+            const batch = getActiveBatch(); 
+            batch.expenses.push({ 
+                date: document.getElementById('exp-date').value, 
+                category: document.getElementById('exp-category').value, 
+                amount: document.getElementById('exp-amount').value, 
+                desc: document.getElementById('exp-desc').value 
+            }); 
+            saveState(); 
+            e.target.reset(); 
+        }; 
+ 
+        window.markVaccineDone = function(id) { 
+            const batch = getActiveBatch(); 
+            const vac = batch.schedule.find(v => v.id === id); 
+            if (vac) { 
+                vac.done = !vac.done; 
+                if (vac.done && vac.repeat > 0) { 
+                    const nextDate = new Date(vac.date); 
+                    nextDate.setDate(nextDate.getDate() + parseInt(vac.repeat)); 
+                    batch.schedule.push({ 
+                        ...vac, 
+                        id: Date.now().toString(), 
+                        date: nextDate.toISOString().split('T')[0], 
+                        done: false 
+                    }); 
+                } 
+                saveState(); 
+            } 
+        }; 
+ 
+        window.deleteVaccine = function(id) { 
+            const batch = getActiveBatch(); 
+            batch.schedule = batch.schedule.filter(v => v.id !== id); 
+            saveState(); 
+        }; 
+ 
+        window.switchBatch = function(id) { 
+            state.currentBatchId = id; 
+            saveState(); 
+        }; 
+ 
+        window.deleteBatch = function(id) { 
+            if (confirm("Delete this batch and all its records?")) { 
+                delete state.batches[id]; 
+                if (state.currentBatchId === id) state.currentBatchId = null; 
+                saveState(); 
+            } 
+        }; 
+ 
+        window.clearAllData = function() { 
+            if (confirm("This will PERMANENTLY delete all batches, logs, and financial data. Continue?")) { 
+                localStorage.clear(); 
+                window.location.reload(); 
+            } 
+        } 
+ 
+        window.exportToCSV = function() { 
+            const batch = getActiveBatch(); 
+            if (!batch) return; 
+            let csv = "Category,Date,Details,Value/Qty,Notes\n"; 
+            batch.logs.forEach(l => csv += `Log,${l.date},Feed: ${l.feedType},${l.feedQty}kg,${l.notes}\n`); 
+            batch.expenses.forEach(e => csv += `Expense,${e.date},${e.category},${e.amount},${e.desc}\n`); 
+            batch.sales.forEach(s => csv += `Sale,${s.date},Buyer: ${s.buyer},${s.qty} Birds @ ${s.price},\n`); 
+            const blob = new Blob([csv], { type: 'text/csv' }); 
+            const url = window.URL.createObjectURL(blob); 
+            const a = document.createElement('a'); 
+            a.setAttribute('href', url); 
+            a.setAttribute('download', `poultry_report_${batch.name}.csv`); 
+            a.click(); 
+        } 
+ 
+        function setToday(inputId) { 
+            const date = new Date().toISOString().split('T')[0]; 
+            const el = document.getElementById(inputId); 
+            if(el) el.value = date; 
+        } 
+ 
+        loadState(); 
+        setToday('log-date'); 
+        setToday('vac-date'); 
+        setToday('sale-date'); 
+        setToday('consume-date'); 
+        setToday('exp-date'); 
+        setToday('new-batch-start'); 
+        showTab('dashboard'); 
+ 
+    </script> 
+</body> 
+</html>
