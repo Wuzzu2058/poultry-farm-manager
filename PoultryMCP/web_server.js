@@ -75,31 +75,31 @@ app.post('/api/sync', async (req, res) => {
 app.post('/api/ai', async (req, res) => {
   try {
     const { prompt, systemInstruction } = req.body;
-    const apiKey = process.env.OPENROUTER_API_KEY;
+    const apiKey = process.env.NVIDIA_API_KEY;
     if (!apiKey) {
-      return res.status(500).json({ error: "OpenRouter API key is missing on the server" });
+      return res.status(500).json({ error: "NVIDIA API key is missing on the server" });
     }
     
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": "http://localhost:3000",
-        "X-Title": "Poultry Farm Manager"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "nvidia/llama-3.1-nemotron-70b-instruct",
         messages: [
           ...(systemInstruction ? [{ role: "system", content: systemInstruction }] : []),
           { role: "user", content: prompt }
-        ]
+        ],
+        temperature: 0.5,
+        max_tokens: 1024
       })
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`OpenRouter API error: ${errorText}`);
+      throw new Error(`NVIDIA API error: ${errorText}`);
     }
 
     const data = await response.json();

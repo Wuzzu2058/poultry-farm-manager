@@ -6,131 +6,175 @@
     <title>Poultry Farm Manager - AI Enhanced</title> 
     <script src="https://cdn.tailwindcss.com"></script> 
     <style> 
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap'); 
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap'); 
          
         body { 
             font-family: 'Outfit', sans-serif; 
-            background-color: #f3f7f3; 
-            color: #112211; 
-            font-size: 1.15rem; /* Larger font size */
+            background: radial-gradient(circle at top left, #f4fbf4 0%, #ebf5eb 40%, #f0f7f0 100%);
+            color: #0f2a18; 
+            font-size: 1.15rem; 
             -webkit-tap-highlight-color: transparent; 
             line-height: 1.6;
         } 
  
-        /* Larger titles and headings */
-        h1 { font-size: 1.75rem !important; }
-        h2 { font-size: 1.5rem !important; font-weight: 800 !important; }
-        h3 { font-size: 1.3rem !important; font-weight: 700 !important; }
+        /* Premium Typography & Sizing overrides */
+        h1 { font-size: 1.85rem !important; font-weight: 800 !important; tracking-tight: -0.025em; }
+        h2 { font-size: 1.6rem !important; font-weight: 800 !important; tracking-tight: -0.02em; }
+        h3 { font-size: 1.35rem !important; font-weight: 700 !important; }
 
         .active-tab { 
-            background-color: #15803d !important; 
+            background: linear-gradient(135deg, #166534 0%, #15803d 100%) !important;
             color: white !important; 
+            box-shadow: 0 4px 12px rgba(22, 101, 52, 0.25);
+            transform: translateY(-2px);
         } 
  
-        /* Inputs, selects and buttons scaled up for tablet/mobile touchability */
+        /* Inputs, selects and textareas styled to look extremely premium */
         input, select, textarea { 
             font-size: 1.15rem !important; 
-            padding: 0.85rem !important; 
-            border-width: 2px !important;
-            border-color: #d1d5db !important;
-            border-radius: 0.75rem !important;
+            padding: 0.95rem 1.25rem !important; 
+            border: 1.5px solid #d8e4dc !important;
+            background-color: rgba(255, 255, 255, 0.9) !important;
+            border-radius: 1rem !important;
             outline: none;
-            transition: border-color 0.2s;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.01);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         } 
         input:focus, select:focus, textarea:focus {
-            border-color: #15803d !important;
+            border-color: #166534 !important;
+            background-color: #ffffff !important;
+            box-shadow: 0 0 0 4px rgba(22, 101, 52, 0.1), inset 0 2px 4px rgba(0, 0, 0, 0.01);
         }
  
+        /* Glassmorphic Premium Cards */
         .card { 
-            background: white; 
-            border-radius: 1.25rem; 
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04); 
-            border: 1px solid #e5e7eb;
-            padding: 1.5rem;
-            transition: transform 0.2s, box-shadow 0.2s;
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 1.5rem; 
+            box-shadow: 0 10px 30px rgba(15, 42, 24, 0.04), 0 1px 3px rgba(15, 42, 24, 0.02); 
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            padding: 1.75rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         } 
         .card:hover {
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(15, 42, 24, 0.08), 0 1px 3px rgba(15, 42, 24, 0.02);
+            border-color: rgba(22, 101, 52, 0.15);
         }
  
         button { 
             font-size: 1.15rem !important;
             min-height: 56px; 
-            border-radius: 0.75rem !important;
+            border-radius: 1rem !important;
             font-weight: 700 !important;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
         } 
         button:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
  
-        .status-growing { background-color: #dcfce7; color: #166534; } 
-        .status-ready { background-color: #fef9c3; color: #854d0e; border: 2px solid #eab308; } 
-        .status-restock { background-color: #fee2e2; color: #991b1b; } 
+        /* Status Pills styling */
+        .status-growing { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); color: #14532d; border: 1px solid rgba(22, 101, 52, 0.1); } 
+        .status-ready { background: linear-gradient(135deg, #fef9c3 0%, #fef08a 100%); color: #713f12; border: 1.5px solid #eab308; } 
+        .status-restock { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); color: #7f1d1d; border: 1px solid rgba(153, 27, 27, 0.1); } 
  
-        .ai-glow { 
-            box-shadow: 0 0 15px rgba(22, 101, 52, 0.25); 
-            border: 1px solid rgba(22, 101, 52, 0.4); 
-        } 
+        /* AI Luxury elements */
+        .ai-gradient-border {
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(135deg, #166534, #3b82f6) border-box;
+            border: 2px solid transparent;
+            box-shadow: 0 20px 40px rgba(22, 101, 52, 0.06);
+        }
+        
+        .ai-glow-btn {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: #f8fafc;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
+        }
+        .ai-glow-btn:hover {
+            box-shadow: 0 15px 30px rgba(15, 23, 42, 0.25);
+            transform: translateY(-2px);
+        }
+        .ai-glow-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
+            transform: scale(0.5);
+            transition: transform 0.5s;
+        }
+        .ai-glow-btn:hover::after {
+            transform: scale(1);
+        }
  
-        @keyframes shimmer { 
-            0% { background-position: -200% 0; } 
-            100% { background-position: 200% 0; } 
-        } 
-        .loading-shimmer { 
-            background: linear-gradient(90deg, #f0fdf4 25%, #dcfce7 50%, #f0fdf4 75%); 
-            background-size: 200% 100%; 
-            animation: shimmer 1.5s infinite; 
-        } 
+        /* Keyframe Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+        .animate-pulse-soft {
+            animation: pulse-soft 3s ease-in-out infinite;
+        }
  
         @media print { 
             .no-print { display: none; } 
         } 
 
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f4fbf4; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* Nav item font adjustments */
-        .nav-item {
-            font-size: 0.85rem !important;
-            padding-top: 0.75rem !important;
-            padding-bottom: 0.75rem !important;
-        }
-
-        /* Utility sizing */
+        /* Typography utility sizing matching Outfit spacing */
         .text-xs { font-size: 0.95rem !important; }
         .text-[10px] { font-size: 0.9rem !important; }
         .text-[8px] { font-size: 0.8rem !important; }
         .text-sm { font-size: 1.05rem !important; }
         .text-lg { font-size: 1.25rem !important; }
         .text-xl { font-size: 1.45rem !important; }
+
+        /* Smooth tab contents transition */
+        .tab-content {
+            animation: fadeIn 0.4s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style> 
 </head> 
 <body class="pb-28"> 
  
-    <!-- Top Navigation Header --> 
-    <header class="bg-green-800 text-white p-4 sticky top-0 z-50 shadow-md"> 
+    <!-- Premium Interactive Header --> 
+    <header class="bg-gradient-to-r from-green-900 via-green-800 to-emerald-950 text-white p-5 sticky top-0 z-50 shadow-lg border-b border-green-700/20"> 
         <div class="max-w-4xl mx-auto flex justify-between items-center"> 
-            <div> 
-                <h1 class="text-xl font-extrabold tracking-tight">POULTRY MANAGER ✨</h1> 
-                <p id="header-date" class="text-sm opacity-90"></p> 
-            </div> 
-            <div class="text-right"> 
-                <span id="header-batch-name" class="block text-xs font-bold uppercase tracking-widest opacity-75">No Active Batch</span> 
-                <span id="header-count" class="text-2xl font-black">0</span> 
-                <span class="text-xs uppercase">Birds</span> 
+            <div class="flex items-center gap-3">
+                <span class="text-3xl animate-float">🐔</span>
+                <div> 
+                    <h1 class="text-xl font-extrabold tracking-tight">BXN POULTRY MANAGER</h1> 
+                    <p id="header-date" class="text-sm opacity-90 font-medium"></p> 
+                </div> 
+            </div>
+            <div class="text-right bg-white/10 px-4 py-2 rounded-2xl backdrop-blur-md border border-white/10"> 
+                <span id="header-batch-name" class="block text-[10px] font-bold uppercase tracking-widest text-emerald-300">No Active Batch</span> 
+                <div class="flex items-baseline justify-end gap-1">
+                    <span id="header-count" class="text-2xl font-black">0</span> 
+                    <span class="text-xs uppercase font-semibold text-emerald-200">Birds</span> 
+                </div>
             </div> 
         </div> 
     </header> 
@@ -138,58 +182,65 @@
     <main class="max-w-4xl mx-auto p-4 space-y-6"> 
  
         <!-- 1. DASHBOARD SECTION --> 
-        <section id="tab-dashboard" class="tab-content space-y-4"> 
-            <div id="status-card" class="card p-6 flex flex-col items-center text-center space-y-2 relative overflow-hidden"> 
-                <span id="batch-status-badge" class="px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wider">Loading...</span> 
-                <h2 class="text-4xl font-black" id="dash-age">0 Days</h2> 
-                <p class="text-gray-500 font-semibold">Current Batch Age</p> 
+        <section id="tab-dashboard" class="tab-content space-y-5"> 
+            <div id="status-card" class="card flex flex-col items-center text-center space-y-3 relative overflow-hidden border border-emerald-100"> 
+                <!-- Luxury radial background glow -->
+                <div class="absolute -top-24 -left-24 w-48 h-48 bg-emerald-200/20 rounded-full blur-3xl"></div>
+                <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-blue-200/10 rounded-full blur-3xl"></div>
+                
+                <span id="batch-status-badge" class="px-5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm">Loading...</span> 
+                <h2 class="text-5xl font-black text-green-950" id="dash-age">0 Days</h2> 
+                <p class="text-emerald-800/60 font-semibold tracking-wide uppercase text-xs">Current Batch Age</p> 
                  
                 <div class="flex gap-3 mt-4 no-print w-full justify-center"> 
-                    <button onclick="getAIInsight()" class="bg-green-100 text-green-800 px-6 py-2 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-green-200 transition"> 
-                        <span>✨</span> Get AI Insight 
+                    <button onclick="getAIInsight()" class="ai-glow-btn px-6 py-2 rounded-2xl flex items-center gap-2 transition hover:scale-105 active:scale-95"> 
+                        <span class="text-emerald-400">✨</span> Ask Llama Advisor 
                     </button> 
-                    <button onclick="playAIBriefing()" id="btn-tts" class="bg-blue-100 text-blue-800 px-6 py-2 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-blue-200 transition"> 
-                        <span id="tts-icon">🔊</span> ✨ Daily Briefing 
+                    <button onclick="playAIBriefing()" id="btn-tts" class="bg-emerald-550 text-white bg-green-700 hover:bg-green-800 px-6 py-2 rounded-2xl font-bold text-sm flex items-center gap-2 shadow-md hover:shadow-lg transition hover:scale-105 active:scale-95"> 
+                        <span id="tts-icon">🔊</span> Live Audio Briefing 
                     </button> 
                 </div> 
             </div> 
  
-            <!-- AI Insight Display Box --> 
-            <div id="ai-insight-box" class="hidden card p-5 border-2 border-green-200 bg-green-50 animate-pulse-slow"> 
-                <div class="flex justify-between items-start mb-2"> 
-                    <h3 class="font-bold text-green-900 flex items-center gap-2"><span>✨</span> AI Advisor</h3> 
-                    <button onclick="closeAIBox()" class="text-gray-400 hover:text-gray-600">✕</button> 
+            <!-- AI Insight Display Box (Luxury Glassmorphic Style) --> 
+            <div id="ai-insight-box" class="hidden card ai-gradient-border bg-gradient-to-br from-emerald-50 to-blue-50/50 p-6 relative overflow-hidden"> 
+                <div class="absolute -right-12 -top-12 w-24 h-24 bg-blue-400/10 rounded-full blur-2xl"></div>
+                <div class="flex justify-between items-start mb-3 border-b border-green-100 pb-2"> 
+                    <h3 class="font-bold text-green-950 flex items-center gap-2 text-lg">
+                        <span class="animate-pulse-soft">✨</span> Llama 3.1 Nemotron Insight
+                    </h3> 
+                    <button onclick="closeAIBox()" class="text-gray-400 hover:text-green-800 hover:bg-green-100/50 w-8 h-8 rounded-full flex items-center justify-center transition">✕</button> 
                 </div> 
-                <div id="ai-insight-content" class="text-sm text-green-800 leading-relaxed whitespace-pre-wrap"></div> 
+                <div id="ai-insight-content" class="text-sm text-green-900 leading-relaxed whitespace-pre-wrap font-medium"></div> 
             </div> 
  
             <div class="grid grid-cols-2 gap-4"> 
-                <div class="card p-4 text-center"> 
-                    <p class="text-xs text-gray-500 uppercase font-bold">Total Sales</p> 
-                    <p class="text-xl font-bold text-green-700">KSh <span id="dash-revenue">0</span></p> 
+                <div class="card p-5 text-center flex flex-col justify-center border border-emerald-50"> 
+                    <p class="text-xs text-emerald-800/60 uppercase font-bold tracking-wide">Total Sales Revenue</p> 
+                    <p class="text-2xl font-black text-green-700 mt-1">KSh <span id="dash-revenue">0</span></p> 
                 </div> 
-                <div class="card p-4 text-center"> 
-                    <p class="text-xs text-gray-500 uppercase font-bold">Total Mortality</p> 
-                    <p class="text-xl font-bold text-red-600"><span id="dash-mortality">0</span> Birds</p> 
+                <div class="card p-5 text-center flex flex-col justify-center border border-red-50"> 
+                    <p class="text-xs text-red-800/60 uppercase font-bold tracking-wide">Total Mortality</p> 
+                    <p class="text-2xl font-black text-red-600 mt-1"><span id="dash-mortality">0</span> Birds</p> 
                 </div> 
             </div> 
  
             <!-- Feed Guide Recommendation Widget -->
-            <div class="card p-4"> 
-                <h3 class="font-bold text-lg mb-3 flex items-center gap-2"> 
-                    <span>🌾</span> Suggested Feed Intake Today
+            <div class="card p-5 border border-amber-100/50 bg-gradient-to-br from-white to-amber-50/20"> 
+                <h3 class="font-bold text-lg mb-3 flex items-center gap-2 text-green-950"> 
+                    <span class="text-xl">🌾</span> Suggested Feed Intake Today
                 </h3> 
-                <div class="bg-amber-50 p-4 rounded-xl border border-amber-200">
-                    <p class="text-base font-bold text-amber-900" id="dash-feed-type">No active batch recommendations.</p>
-                    <p class="text-xs text-amber-700 mt-1" id="dash-feed-details">Create or select a batch to view feeding guide details.</p>
+                <div class="bg-gradient-to-r from-amber-50 to-yellow-50/30 p-4 rounded-2xl border border-amber-200/60 flex flex-col gap-2">
+                    <p class="text-base font-extrabold text-amber-900" id="dash-feed-type">No active batch recommendations.</p>
+                    <p class="text-xs text-amber-800/80 font-medium leading-relaxed" id="dash-feed-details">Create or select a batch to view feeding guide details.</p>
                 </div>
             </div> 
 
-            <div class="card p-4"> 
-                <h3 class="font-bold text-lg mb-3 flex items-center gap-2"> 
-                    <span>📅</span> Upcoming Vaccines (7 Days) 
+            <div class="card p-5"> 
+                <h3 class="font-bold text-lg mb-3 flex items-center gap-2 text-green-950"> 
+                    <span class="text-xl">📅</span> Upcoming Vaccines (7 Days) 
                 </h3> 
-                <div id="dashboard-vaccines" class="space-y-2"> 
+                <div id="dashboard-vaccines" class="space-y-2.5"> 
                     <!-- Dynamic --> 
                 </div> 
             </div> 
@@ -198,68 +249,68 @@
         <!-- 2. DAILY LOG SECTION --> 
         <section id="tab-logs" class="tab-content hidden space-y-4"> 
             <div class="card p-6"> 
-                <h2 class="text-2xl font-bold mb-4">Record Daily Activity</h2> 
+                <h2 class="text-2xl font-bold mb-4 text-green-950">Record Daily Activity</h2> 
                 <form id="daily-log-form" class="space-y-4"> 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> 
                         <div> 
-                            <label class="block text-sm font-bold text-gray-700">Date</label> 
+                            <label class="block text-sm font-bold text-emerald-950">Date</label> 
                             <input type="date" id="log-date" class="w-full border-2 border-gray-200 rounded-lg focus:border-green-500 outline-none" required> 
                         </div> 
                         <div> 
-                            <label class="block text-sm font-bold text-gray-700">Total Live Count Now</label> 
+                            <label class="block text-sm font-bold text-emerald-950">Total Live Count Now</label> 
                             <input type="number" id="log-count" class="w-full border-2 border-gray-200 rounded-lg" placeholder="Confirm total count"> 
                         </div> 
                         <div> 
-                            <label class="block text-sm font-bold text-gray-700">Mortality Today (Deaths)</label> 
+                            <label class="block text-sm font-bold text-emerald-950">Mortality Today (Deaths)</label> 
                             <input type="number" id="log-mortality" class="w-full border-2 border-gray-200 rounded-lg" value="0"> 
                         </div> 
                         <div> 
-                            <label class="block text-sm font-bold text-gray-700">Avg Weight (kg)</label> 
+                            <label class="block text-sm font-bold text-emerald-950">Avg Weight (kg)</label> 
                             <input type="number" step="0.01" id="log-weight" class="w-full border-2 border-gray-200 rounded-lg" placeholder="0.00"> 
                         </div> 
                     </div> 
  
-                    <div class="bg-green-50 p-4 rounded-xl border border-green-100"> 
-                        <div class="flex justify-between items-center mb-2"> 
-                            <h3 class="font-bold text-green-800">Feeding Assistant</h3> 
-                            <span id="feed-suggestion-badge" class="text-xs bg-green-200 text-green-800 px-2 py-1 rounded font-bold">Suggested</span> 
+                    <div class="bg-gradient-to-br from-green-50/70 to-emerald-50/30 p-5 rounded-2xl border border-green-100"> 
+                        <div class="flex justify-between items-center mb-3"> 
+                            <h3 class="font-bold text-green-900">Feeding Assistant</h3> 
+                            <span id="feed-suggestion-badge" class="text-[10px] bg-green-200 text-green-950 px-2 py-1 rounded-full font-bold uppercase tracking-wider">Suggested</span> 
                         </div> 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> 
                             <div> 
-                                <label class="block text-xs font-bold text-green-700">Feed Type</label> 
-                                <select id="log-feed-type" class="w-full border-none bg-transparent font-bold text-lg"> 
+                                <label class="block text-xs font-bold text-green-800 mb-1">Feed Type</label> 
+                                <select id="log-feed-type" class="w-full border-none bg-transparent font-bold text-lg focus:ring-0"> 
                                     <option value="Chick Mash">Chick Mash (0-3 wks)</option> 
                                     <option value="Grower Mash">Grower Mash (4-7 wks)</option> 
                                     <option value="Finisher">Finisher (8+ wks)</option> 
                                 </select> 
                             </div> 
                             <div> 
-                                <label class="block text-xs font-bold text-green-700">Amount (kg)</label> 
-                                <input type="number" step="0.1" id="log-feed-qty" class="w-full border-none bg-transparent font-bold text-lg"> 
+                                <label class="block text-xs font-bold text-green-800 mb-1">Amount (kg)</label> 
+                                <input type="number" step="0.1" id="log-feed-qty" class="w-full border-none bg-transparent font-bold text-lg focus:ring-0"> 
                             </div> 
                         </div> 
                     </div> 
  
-                    <div class="flex items-center gap-3 p-2 bg-gray-50 rounded-lg"> 
-                        <input type="checkbox" id="log-sawdust" class="w-6 h-6 accent-green-600"> 
-                        <label for="log-sawdust" class="font-bold text-gray-700">Sawdust Changed Today?</label> 
+                    <div class="flex items-center gap-3 p-3 bg-gray-50/60 rounded-xl border border-gray-100"> 
+                        <input type="checkbox" id="log-sawdust" class="w-6 h-6 accent-green-800 rounded"> 
+                        <label for="log-sawdust" class="font-bold text-emerald-950 cursor-pointer select-none">Sawdust Changed Today?</label> 
                     </div> 
  
                     <div class="space-y-2"> 
-                        <div class="flex justify-between items-end"> 
-                            <label class="block text-sm font-bold text-gray-700">Notes & Observations</label> 
-                            <button type="button" onclick="checkSymptoms()" class="text-[10px] font-bold bg-purple-100 text-purple-700 px-2 py-1 rounded hover:bg-purple-200 transition"> 
+                        <div class="flex justify-between items-end mb-1"> 
+                            <label class="block text-sm font-bold text-emerald-950">Notes & Observations</label> 
+                            <button type="button" onclick="checkSymptoms()" class="text-[10px] font-bold bg-purple-100 text-purple-800 px-3 py-1.5 rounded-lg hover:bg-purple-200 transition shadow-sm"> 
                                 ✨ AI Symptom Check 
                             </button> 
                         </div> 
-                        <textarea id="log-notes" rows="2" class="w-full border-2 border-gray-200 rounded-lg" placeholder="Any behavior changes?"></textarea> 
+                        <textarea id="log-notes" rows="2" class="w-full border-2 border-gray-200 rounded-lg" placeholder="Any behavior changes? (E.g. cough, lethargy, wet droppings)"></textarea> 
                     </div> 
  
-                    <button type="submit" class="w-full bg-green-700 text-white text-xl font-bold py-4 rounded-xl shadow-lg hover:bg-green-800 transition">SAVE DAILY LOG</button> 
+                    <button type="submit" class="w-full bg-gradient-to-r from-green-800 to-green-700 text-white text-xl font-bold py-4 rounded-2xl shadow-lg hover:shadow-xl hover:from-green-700 hover:to-green-600 transition">SAVE DAILY LOG</button> 
                 </form> 
             </div> 
              
-            <div id="log-history" class="space-y-2 mt-6"> 
+            <div id="log-history" class="space-y-3 mt-6"> 
                 <!-- Log History cards will appear here --> 
             </div> 
         </section> 
@@ -267,10 +318,10 @@
         <!-- 3. VACCINE SECTION --> 
         <section id="tab-vaccines" class="tab-content hidden space-y-4"> 
             <div class="card p-6"> 
-                <h2 class="text-2xl font-bold mb-4">Medical Schedule</h2> 
+                <h2 class="text-2xl font-bold mb-4 text-green-950">Medical Schedule</h2> 
                 
-                <!-- Quick Defaults Button -->
-                <button type="button" onclick="loadVaccineDefaults()" class="w-full bg-stone-100 text-stone-700 font-bold py-2 rounded-xl mb-4 border border-stone-200 hover:bg-stone-200 transition">🔮 LOAD STANDARD VACCINATION SCHEDULE</button>
+                <!-- Quick Defaults Button (Interactive Neon Style) -->
+                <button type="button" onclick="loadVaccineDefaults()" class="w-full bg-gradient-to-r from-slate-100 to-emerald-50/50 hover:from-emerald-50 hover:to-emerald-100 text-emerald-900 font-extrabold py-3.5 rounded-2xl mb-5 border border-emerald-200 shadow-sm transition hover:scale-[1.01] active:scale-95">🔮 LOAD STANDARD VACCINATION SCHEDULE</button>
 
                 <form id="vaccine-form" class="space-y-4"> 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> 
@@ -278,12 +329,12 @@
                         <input type="text" id="vac-name" class="border-2 border-gray-200 rounded-lg" placeholder="Vaccine/Drug Name" required> 
                         <input type="text" id="vac-desc" class="border-2 border-gray-200 rounded-lg" placeholder="Dose Description (e.g. 2ml/L)"> 
                         <div class="flex items-center gap-2"> 
-                            <label class="text-xs font-bold">Repeat every</label> 
-                            <input type="number" id="vac-repeat" class="w-20 border-2 border-gray-200 rounded-lg" placeholder="0"> 
-                            <span class="text-xs font-bold">days</span> 
+                            <label class="text-xs font-bold text-emerald-950">Repeat every</label> 
+                            <input type="number" id="vac-repeat" class="w-24 border-2 border-gray-200 rounded-lg" placeholder="0"> 
+                            <span class="text-xs font-bold text-emerald-950">days</span> 
                         </div> 
                     </div> 
-                    <button type="submit" class="w-full bg-blue-700 text-white font-bold py-3 rounded-xl">+ ADD TO SCHEDULE</button> 
+                    <button type="submit" class="w-full bg-gradient-to-r from-blue-700 to-blue-600 text-white font-bold py-3.5 rounded-2xl shadow hover:shadow-md hover:from-blue-600 hover:to-blue-500">Add Custom Vaccine / Medication</button> 
                 </form> 
             </div> 
  
@@ -295,31 +346,31 @@
         <!-- 4. STOCK & SALES SECTION --> 
         <section id="tab-stock" class="tab-content hidden space-y-4"> 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> 
-                <div class="card p-6"> 
-                    <h3 class="text-xl font-bold mb-4 text-green-800">Record Sales</h3> 
+                <div class="card p-6 border-l-4 border-l-green-600"> 
+                    <h3 class="text-xl font-bold mb-4 text-green-900">Record Sales</h3> 
                     <form id="sale-form" class="space-y-4"> 
                         <input type="date" id="sale-date" class="w-full border-2 border-gray-200 rounded-lg" required> 
                         <input type="number" id="sale-qty" class="w-full border-2 border-gray-200 rounded-lg" placeholder="Quantity Sold" required> 
                         <input type="number" id="sale-price" class="w-full border-2 border-gray-200 rounded-lg" placeholder="Price per bird (KES)" value="650"> 
                         <input type="text" id="sale-buyer" class="w-full border-2 border-gray-200 rounded-lg" placeholder="Buyer Name"> 
-                        <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 rounded-xl">RECORD SALE</button> 
+                        <button type="submit" class="w-full bg-green-700 text-white font-bold py-3.5 rounded-2xl shadow hover:bg-green-600">RECORD SALE</button> 
                     </form> 
                 </div> 
  
-                <div class="card p-6"> 
-                    <h3 class="text-xl font-bold mb-4 text-orange-800">Family Consumption</h3> 
+                <div class="card p-6 border-l-4 border-l-orange-500"> 
+                    <h3 class="text-xl font-bold mb-4 text-orange-950">Family Consumption</h3> 
                     <form id="consume-form" class="space-y-4"> 
                         <input type="date" id="consume-date" class="w-full border-2 border-gray-200 rounded-lg" required> 
                         <input type="number" id="consume-qty" class="w-full border-2 border-gray-200 rounded-lg" placeholder="Quantity Eaten" required> 
-                        <p class="text-xs text-gray-500 italic">Valued at 650 KES for P&L tracking.</p> 
-                        <button type="submit" class="w-full bg-orange-600 text-white font-bold py-3 rounded-xl">RECORD CONSUMPTION</button> 
+                        <p class="text-xs text-gray-500 font-medium italic">Valued at 650 KES for P&L tracking.</p> 
+                        <button type="submit" class="w-full bg-orange-600 text-white font-bold py-3.5 rounded-2xl shadow hover:bg-orange-500">RECORD CONSUMPTION</button> 
                     </form> 
                 </div> 
             </div> 
  
             <div class="card p-6"> 
-                <h3 class="text-xl font-bold mb-4">Stock History</h3> 
-                <div id="stock-history" class="space-y-2"> 
+                <h3 class="text-xl font-bold mb-4 text-green-950">Stock History</h3> 
+                <div id="stock-history" class="space-y-2.5"> 
                     <!-- Dynamic --> 
                 </div> 
             </div> 
@@ -328,7 +379,7 @@
         <!-- 5. CASH & EXPENSES SECTION --> 
         <section id="tab-expenses" class="tab-content hidden space-y-4"> 
             <div class="card p-6"> 
-                <h2 class="text-2xl font-bold mb-4">Record Expenses</h2> 
+                <h2 class="text-2xl font-bold mb-4 text-green-950">Record Expenses</h2> 
                 <form id="expense-form" class="space-y-4"> 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> 
                         <input type="date" id="exp-date" class="w-full border-2 border-gray-200 rounded-lg" required> 
@@ -346,22 +397,22 @@
                         <input type="number" id="exp-amount" class="w-full border-2 border-gray-200 rounded-lg" placeholder="Amount (KES)" required> 
                         <input type="text" id="exp-desc" class="w-full border-2 border-gray-200 rounded-lg" placeholder="Additional Details"> 
                     </div> 
-                    <button type="submit" class="w-full bg-yellow-600 text-white font-bold py-3 rounded-xl">RECORD EXPENSE</button> 
+                    <button type="submit" class="w-full bg-yellow-600 hover:bg-yellow-500 text-white font-bold py-3.5 rounded-2xl shadow">RECORD EXPENSE</button> 
                 </form> 
             </div> 
  
             <div class="card p-6 overflow-x-auto"> 
-                <h3 class="text-xl font-bold mb-4">Expense Log</h3> 
+                <h3 class="text-xl font-bold mb-4 text-green-950">Expense Log</h3> 
                 <table class="w-full border-collapse"> 
                     <thead> 
-                        <tr class="border-b text-xs text-left font-bold text-gray-500 uppercase"> 
-                            <th class="p-2">Date</th> 
-                            <th class="p-2">Category</th> 
-                            <th class="p-2">Amount</th> 
-                            <th class="p-2">Details</th> 
+                        <tr class="border-b-2 border-gray-200 text-xs text-left font-bold text-gray-500 uppercase tracking-wider"> 
+                            <th class="p-3">Date</th> 
+                            <th class="p-3">Category</th> 
+                            <th class="p-3">Amount (KSh)</th> 
+                            <th class="p-3">Details</th> 
                         </tr> 
                     </thead> 
-                    <tbody id="expense-table"> 
+                    <tbody id="expense-table" class="divide-y divide-gray-100 font-medium"> 
                         <!-- Dynamic --> 
                     </tbody> 
                 </table> 
@@ -370,42 +421,42 @@
  
         <!-- 6. REPORTS & PNL SECTION --> 
         <section id="tab-reports" class="tab-content hidden space-y-4"> 
-            <div class="bg-green-800 text-white card p-6 text-center space-y-2"> 
-                <p class="text-xs uppercase opacity-75 font-bold">Net Profit / Loss Today</p> 
-                <h2 class="text-5xl font-black" id="pl-net">0 KES</h2> 
+            <div class="bg-gradient-to-r from-green-800 to-emerald-950 text-white card p-6 text-center space-y-2 shadow-xl border border-green-700"> 
+                <p class="text-xs uppercase opacity-75 font-bold tracking-widest">Net Profit / Loss</p> 
+                <h2 class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-100 to-green-50" id="pl-net">0 KES</h2> 
             </div> 
  
-            <div class="grid grid-cols-2 gap-4"> 
-                <div class="card p-4"> 
-                    <h3 class="font-bold text-sm text-green-700 uppercase mb-3">Revenues</h3> 
-                    <div class="space-y-2 text-xs"> 
-                        <div class="flex justify-between border-b pb-1"> 
-                            <span>Cash Sales:</span> 
-                            <strong id="pl-cash-sales">0 KES</strong> 
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> 
+                <div class="card p-5 border-t-4 border-t-green-600"> 
+                    <h3 class="font-bold text-sm text-green-900 uppercase tracking-wide mb-3">Revenues</h3> 
+                    <div class="space-y-2 text-xs font-semibold"> 
+                        <div class="flex justify-between border-b border-gray-100 pb-1"> 
+                            <span class="text-gray-500">Cash Sales:</span> 
+                            <strong id="pl-cash-sales" class="text-green-900">0 KES</strong> 
                         </div> 
-                        <div class="flex justify-between border-b pb-1"> 
-                            <span>Home consumption:</span> 
-                            <strong id="pl-consume-val">0 KES</strong> 
+                        <div class="flex justify-between border-b border-gray-100 pb-1"> 
+                            <span class="text-gray-500">Home Consumption:</span> 
+                            <strong id="pl-consume-val" class="text-orange-950">0 KES</strong> 
                         </div> 
-                        <div class="flex justify-between font-bold text-sm pt-1"> 
+                        <div class="flex justify-between font-bold text-sm pt-2 text-green-950"> 
                             <span>Total Revenue:</span> 
                             <span id="pl-total-rev">0 KES</span> 
                         </div> 
                     </div> 
                 </div> 
  
-                <div class="card p-4"> 
-                    <h3 class="font-bold text-sm text-red-700 uppercase mb-3">Expenses</h3> 
-                    <div class="space-y-2 text-xs"> 
-                        <div class="flex justify-between border-b pb-1"> 
-                            <span>Chicks Cost:</span> 
-                            <strong id="pl-chick-cost">0 KES</strong> 
+                <div class="card p-5 border-t-4 border-t-red-500"> 
+                    <h3 class="font-bold text-sm text-red-900 uppercase tracking-wide mb-3">Expenses</h3> 
+                    <div class="space-y-2 text-xs font-semibold"> 
+                        <div class="flex justify-between border-b border-gray-100 pb-1"> 
+                            <span class="text-gray-500">Chicks Cost:</span> 
+                            <strong id="pl-chick-cost" class="text-red-900">0 KES</strong> 
                         </div> 
-                        <div class="flex justify-between border-b pb-1"> 
-                            <span>Operational Costs:</span> 
-                            <strong id="pl-ops-cost">0 KES</strong> 
+                        <div class="flex justify-between border-b border-gray-100 pb-1"> 
+                            <span class="text-gray-500">Operational Costs:</span> 
+                            <strong id="pl-ops-cost" class="text-yellow-950">0 KES</strong> 
                         </div> 
-                        <div class="flex justify-between font-bold text-sm pt-1"> 
+                        <div class="flex justify-between font-bold text-sm pt-2 text-red-950"> 
                             <span>Total Expenses:</span> 
                             <span id="pl-total-exp">0 KES</span> 
                         </div> 
@@ -414,15 +465,15 @@
             </div> 
  
             <div class="card p-6"> 
-                <h3 class="text-xl font-bold mb-4">Financial Efficiency</h3> 
+                <h3 class="text-xl font-bold mb-4 text-green-950">Financial Efficiency</h3> 
                 <div class="grid grid-cols-2 gap-4 text-center"> 
-                    <div class="border p-3 rounded-xl bg-gray-50"> 
-                        <p class="text-xs text-gray-500 font-bold">Production Cost / Bird</p> 
-                        <p class="text-lg font-bold" id="pl-cost-per">0</p> 
+                    <div class="border border-gray-100 p-4 rounded-2xl bg-gray-50/50"> 
+                        <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Production Cost / Bird</p> 
+                        <p class="text-xl font-black text-red-700 mt-1" id="pl-cost-per">0</p> 
                     </div> 
-                    <div class="border p-3 rounded-xl bg-gray-50"> 
-                        <p class="text-xs text-gray-500 font-bold">Revenue Per Bird</p> 
-                        <p class="text-lg font-bold" id="pl-rev-per">0</p> 
+                    <div class="border border-gray-100 p-4 rounded-2xl bg-gray-50/50"> 
+                        <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Revenue Per Bird</p> 
+                        <p class="text-xl font-black text-green-700 mt-1" id="pl-rev-per">0</p> 
                     </div> 
                 </div> 
             </div> 
@@ -431,73 +482,73 @@
         <!-- 7. BATCH MANAGEMENT SECTION --> 
         <section id="tab-settings" class="tab-content hidden space-y-4"> 
             <div class="card p-6"> 
-                <h2 class="text-2xl font-bold mb-4">Start New Batch</h2> 
+                <h2 class="text-2xl font-bold mb-4 text-green-950">Start New Batch</h2> 
                 <form id="new-batch-form" class="space-y-4"> 
                     <div> 
-                        <label class="block text-sm font-bold">Batch Name / Year</label> 
+                        <label class="block text-sm font-bold text-emerald-950">Batch Name / Year</label> 
                         <input type="text" id="new-batch-name" class="w-full border-2 border-gray-200 rounded-lg" placeholder="Batch Oct 2023" required> 
                     </div> 
                     <div class="grid grid-cols-2 gap-4"> 
                         <div> 
-                            <label class="block text-sm font-bold">Start Date</label> 
+                            <label class="block text-sm font-bold text-emerald-950">Start Date</label> 
                             <input type="date" id="new-batch-start" class="w-full border-2 border-gray-200 rounded-lg" required> 
                         </div> 
                         <div> 
-                            <label class="block text-sm font-bold">Initial Chicks</label> 
+                            <label class="block text-sm font-bold text-emerald-950">Initial Chicks</label> 
                             <input type="number" id="new-batch-count" class="w-full border-2 border-gray-200 rounded-lg" required> 
                         </div> 
                     </div> 
                     <div class="grid grid-cols-2 gap-4"> 
                         <div> 
-                            <label class="block text-sm font-bold">Cost Per Chick (KES)</label> 
+                            <label class="block text-sm font-bold text-emerald-950">Cost Per Chick (KES)</label> 
                             <input type="number" id="new-batch-cost" class="w-full border-2 border-gray-200 rounded-lg" required> 
                         </div> 
                         <div> 
-                            <label class="block text-sm font-bold">Supplier</label> 
+                            <label class="block text-sm font-bold text-emerald-950">Supplier</label> 
                             <input type="text" id="new-batch-supplier" class="w-full border-2 border-gray-200 rounded-lg"> 
                         </div> 
                     </div> 
-                    <button type="submit" class="w-full bg-green-900 text-white font-bold py-4 rounded-xl">CREATE BATCH & SET AS ACTIVE</button> 
+                    <button type="submit" class="w-full bg-gradient-to-r from-green-900 to-green-800 text-white font-bold py-4 rounded-2xl shadow hover:shadow-lg">CREATE BATCH & SET AS ACTIVE</button> 
                 </form> 
             </div> 
  
             <div class="card p-6"> 
-                <h3 class="text-xl font-bold mb-4">Batch History</h3> 
+                <h3 class="text-xl font-bold mb-4 text-green-950">Batch History</h3> 
                 <div id="batch-list" class="space-y-2"> 
                     <!-- Dynamic --> 
                 </div> 
             </div> 
  
             <div class="p-4 text-center flex flex-col gap-2"> 
-                <button onclick="exportToCSV()" class="w-full bg-stone-200 text-stone-800 font-bold py-3 rounded-xl mb-2">📥 EXPORT BATCH DATA TO CSV</button> 
-                <button onclick="clearAllData()" class="text-red-500 text-xs underline font-bold uppercase tracking-widest mt-4">Delete All App Data Forever</button> 
+                <button onclick="exportToCSV()" class="w-full bg-stone-200 text-stone-900 font-bold py-3.5 rounded-2xl hover:bg-stone-300">📥 EXPORT BATCH DATA TO CSV</button> 
+                <button onclick="clearAllData()" class="text-red-500 text-xs underline font-bold uppercase tracking-widest mt-4 hover:text-red-700 transition">Delete All App Data Forever</button> 
             </div> 
         </section> 
  
     </main> 
  
-    <!-- Bottom Navigation Bar --> 
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex no-print shadow-2xl z-50"> 
-        <button onclick="showTab('dashboard')" data-tab="dashboard" class="flex-1 flex flex-col items-center py-3 text-gray-500 font-bold text-[10px] nav-item"> 
-            <span class="text-xl">🏠</span> HOME 
+    <!-- Premium Frosted Bottom Navigation Bar --> 
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-gray-200 flex no-print shadow-2xl z-50"> 
+        <button onclick="showTab('dashboard')" data-tab="dashboard" class="flex-1 flex flex-col items-center py-4 text-gray-500 font-bold text-[10px] nav-item transition"> 
+            <span class="text-2xl mb-1">🏠</span> HOME 
         </button> 
-        <button onclick="showTab('logs')" data-tab="logs" class="flex-1 flex flex-col items-center py-3 text-gray-500 font-bold text-[10px] nav-item"> 
-            <span class="text-xl">📝</span> LOGS 
+        <button onclick="showTab('logs')" data-tab="logs" class="flex-1 flex flex-col items-center py-4 text-gray-500 font-bold text-[10px] nav-item transition"> 
+            <span class="text-2xl mb-1">📝</span> LOGS 
         </button> 
-        <button onclick="showTab('vaccines')" data-tab="vaccines" class="flex-1 flex flex-col items-center py-3 text-gray-500 font-bold text-[10px] nav-item"> 
-            <span class="text-xl">💉</span> MEDS 
+        <button onclick="showTab('vaccines')" data-tab="vaccines" class="flex-1 flex flex-col items-center py-4 text-gray-500 font-bold text-[10px] nav-item transition"> 
+            <span class="text-2xl mb-1">💉</span> MEDS 
         </button> 
-        <button onclick="showTab('stock')" data-tab="stock" class="flex-1 flex flex-col items-center py-3 text-gray-500 font-bold text-[10px] nav-item"> 
-            <span class="text-xl">🐔</span> STOCK 
+        <button onclick="showTab('stock')" data-tab="stock" class="flex-1 flex flex-col items-center py-4 text-gray-500 font-bold text-[10px] nav-item transition"> 
+            <span class="text-2xl mb-1">🐔</span> STOCK 
         </button> 
-        <button onclick="showTab('expenses')" data-tab="expenses" class="flex-1 flex flex-col items-center py-3 text-gray-500 font-bold text-[10px] nav-item"> 
-            <span class="text-xl">💰</span> CASH 
+        <button onclick="showTab('expenses')" data-tab="expenses" class="flex-1 flex flex-col items-center py-4 text-gray-500 font-bold text-[10px] nav-item transition"> 
+            <span class="text-2xl mb-1">💰</span> CASH 
         </button> 
-        <button onclick="showTab('reports')" data-tab="reports" class="flex-1 flex flex-col items-center py-3 text-gray-500 font-bold text-[10px] nav-item"> 
-            <span class="text-xl">📊</span> P&L 
+        <button onclick="showTab('reports')" data-tab="reports" class="flex-1 flex flex-col items-center py-4 text-gray-500 font-bold text-[10px] nav-item transition"> 
+            <span class="text-2xl mb-1">📊</span> P&L 
         </button> 
-        <button onclick="showTab('settings')" data-tab="settings" class="flex-1 flex flex-col items-center py-3 text-gray-500 font-bold text-[10px] nav-item"> 
-            <span class="text-xl">⚙️</span> BATCH 
+        <button onclick="showTab('settings')" data-tab="settings" class="flex-1 flex flex-col items-center py-4 text-gray-500 font-bold text-[10px] nav-item transition"> 
+            <span class="text-2xl mb-1">⚙️</span> BATCH 
         </button> 
     </nav> 
  
@@ -720,13 +771,13 @@
                 recentNotes: batch.logs.slice(-3).map(l => l.notes) 
             }; 
  
-            showAIBox("✨ Consultando a la IA..."); 
+            showAIBox("✨ Querying Llama 3.1 Nemotron Expert advisor..."); 
              
             try { 
-                const prompt = `You are an expert poultry advisor for a small farm in Kenya.  
-                Batch data: Age ${data.ageDays} days, ${data.liveCount} birds left out of ${data.initial} initial.  
+                const prompt = `You are a high-tier poultry advisor for a farm in Kenya. 
+                Batch data: Age ${data.ageDays} days, ${data.liveCount} birds left out of ${data.initial} initial. 
                 Mortality: ${data.mortality}. Recent notes: ${data.recentNotes.join(', ')}. 
-                Provide 3 concise, highly practical tips to improve survival and growth for today. Use a helpful, professional tone.`; 
+                Provide 3 concise, highly practical tips to improve survival and growth for today. Speak directly and professionally.`; 
                  
                 const result = await callGemini({ 
                     contents: [{ parts: [{ text: prompt }] }], 
@@ -753,8 +804,8 @@
                 const age = calculateAge(batch.startDate); 
                 const count = calculateLiveCount(batch).live; 
                  
-                const prompt = `Prepare a short, upbeat daily briefing for a poultry caretaker in Kenya.  
-                The batch is ${age} days old with ${count} birds. Remind them to check water, sawdust, and focus on bird behavior.  
+                const prompt = `Prepare a short, upbeat daily briefing for a poultry caretaker in Kenya. 
+                The batch is ${age} days old with ${count} birds. Remind them to check water, sawdust, and focus on bird behavior. 
                 Keep it under 50 words. Start with 'Hello Manager!'`; 
  
                 const result = await callGemini({ 
@@ -793,8 +844,8 @@
             showAIBox("✨ AI checking symptoms..."); 
              
             try { 
-                const prompt = `A poultry farmer reports these observations: "${notes}".  
-                List 2 possible common causes and 2 immediate first-aid steps.  
+                const prompt = `A poultry farmer reports these observations: "${notes}". 
+                List 2 possible common causes and 2 immediate first-aid steps. 
                 Disclaimer: Include a note that this is not a professional vet diagnosis.`; 
                  
                 const result = await callGemini({ 
@@ -920,16 +971,16 @@
             }); 
  
             if (upcoming.length === 0) { 
-                list.innerHTML = `<p class="text-sm text-gray-400 italic">No vaccines scheduled for this week.</p>`; 
+                list.innerHTML = `<p class="text-sm text-gray-400 italic font-medium">No vaccines scheduled for this week.</p>`; 
             } else { 
                 upcoming.forEach(v => { 
                     list.innerHTML += ` 
-                        <div class="flex justify-between items-center bg-blue-50 p-3 rounded-lg border-l-4 border-blue-500"> 
+                        <div class="flex justify-between items-center bg-blue-50/60 p-3.5 rounded-xl border border-blue-100 shadow-sm"> 
                             <div> 
                                 <p class="font-bold text-blue-900 text-sm">${v.name}</p> 
                                 <p class="text-[10px] text-blue-700 font-bold">${v.date}</p> 
                             </div> 
-                            <button onclick="markVaccineDone('${v.id}')" class="text-xs bg-blue-600 text-white px-2 py-1 rounded">Done</button> 
+                            <button onclick="markVaccineDone('${v.id}')" class="text-xs bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg shadow-sm font-bold min-h-[36px]">Done</button> 
                         </div> 
                     `; 
                 }); 
@@ -938,17 +989,17 @@
  
         function updateHistory(batch) { 
             const container = document.getElementById('log-history'); 
-            container.innerHTML = "<h3 class='font-bold text-gray-400 uppercase text-[10px] mb-2'>Recent Logs</h3>"; 
+            container.innerHTML = "<h3 class='font-bold text-gray-400 uppercase text-[10px] mb-2 tracking-wider'>Recent Logs</h3>"; 
             batch.logs.slice(-5).reverse().forEach(l => { 
                 container.innerHTML += ` 
-                    <div class="bg-white p-3 rounded-lg border flex justify-between items-center"> 
+                    <div class="bg-white p-4 rounded-xl border border-gray-100 flex justify-between items-center hover:scale-[1.01] transition duration-200"> 
                         <div> 
-                            <p class="font-bold text-xs">${l.date}</p> 
-                            <p class="text-[10px] text-gray-500">${l.feedType} • ${l.feedQty}kg • ${l.mortality || 0} died</p> 
+                            <p class="font-bold text-xs text-green-950">${l.date}</p> 
+                            <p class="text-[10px] text-emerald-800/60 font-semibold mt-0.5">${l.feedType} • ${l.feedQty}kg • ${l.mortality || 0} died</p> 
                         </div> 
                         <div class="text-right"> 
-                            <p class="font-bold text-green-700 text-sm">${l.weight || '-'}kg</p> 
-                            <p class="text-[8px] uppercase text-gray-400 font-bold">Weight</p> 
+                            <p class="font-black text-green-700 text-sm">${l.weight || '-'} kg</p> 
+                            <p class="text-[8px] uppercase text-gray-400 font-bold">Avg Weight</p> 
                         </div> 
                     </div> 
                 `; 
@@ -960,15 +1011,15 @@
             container.innerHTML = ""; 
             batch.schedule.sort((a,b) => new Date(a.date) - new Date(b.date)).forEach(v => { 
                 container.innerHTML += ` 
-                    <div class="card p-4 flex justify-between items-center ${v.done ? 'opacity-50 grayscale' : ''}"> 
+                    <div class="card p-4 flex justify-between items-center ${v.done ? 'opacity-40 grayscale' : ''} hover:scale-[1.01] transition duration-200"> 
                         <div class="flex items-center gap-4"> 
-                            <input type="checkbox" ${v.done ? 'checked' : ''} onchange="markVaccineDone('${v.id}')" class="w-6 h-6"> 
+                            <input type="checkbox" ${v.done ? 'checked' : ''} onchange="markVaccineDone('${v.id}')" class="w-6 h-6 accent-green-800 cursor-pointer"> 
                             <div> 
-                                <p class="font-bold ${v.done ? 'line-through' : ''}">${v.name}</p> 
-                                <p class="text-xs text-gray-500">${v.date} • ${v.desc || 'No desc'}</p> 
+                                <p class="font-bold text-green-950 ${v.done ? 'line-through text-gray-450' : ''}">${v.name}</p> 
+                                <p class="text-xs text-gray-500 font-medium">${v.date} • ${v.desc || 'No description'}</p> 
                             </div> 
                         </div> 
-                        <button onclick="deleteVaccine('${v.id}')" class="text-red-300">🗑️</button> 
+                        <button onclick="deleteVaccine('${v.id}')" class="text-red-300 hover:text-red-500 text-lg hover:scale-110 transition">🗑️</button> 
                     </div> 
                 `; 
             }); 
@@ -978,20 +1029,20 @@
             const container = document.getElementById('stock-history'); 
             container.innerHTML = ""; 
             const items = [ 
-                ...batch.sales.map(s => ({...s, type: 'SALE', color: 'text-green-700'})), 
-                ...batch.consumption.map(c => ({...c, type: 'EATEN', color: 'text-orange-700', buyer: 'Family'})) 
+                ...batch.sales.map(s => ({...s, type: 'SALE', color: 'bg-green-100 text-green-800 border-green-200'})), 
+                ...batch.consumption.map(c => ({...c, type: 'EATEN', color: 'bg-orange-100 text-orange-850 border-orange-200', buyer: 'Family'})) 
             ].sort((a,b) => new Date(b.date) - new Date(a.date)); 
  
             items.forEach(item => { 
                 container.innerHTML += ` 
-                    <div class="bg-white p-3 rounded-lg border flex justify-between items-center"> 
+                    <div class="bg-white p-4 rounded-xl border border-gray-100 flex justify-between items-center hover:scale-[1.01] transition duration-200"> 
                         <div> 
-                            <span class="text-[8px] font-bold ${item.color} border px-1 rounded">${item.type}</span> 
-                            <p class="font-bold text-xs mt-1">${item.date}</p> 
-                            <p class="text-[10px] text-gray-500">${item.qty} birds • ${item.buyer || '-'}</p> 
+                            <span class="text-[8px] font-extrabold ${item.color} border px-2 py-0.5 rounded-full uppercase tracking-wider">${item.type}</span> 
+                            <p class="font-bold text-xs mt-2 text-green-950">${item.date}</p> 
+                            <p class="text-[10px] text-gray-500 mt-0.5">${item.qty} birds • ${item.buyer || '-'}</p> 
                         </div> 
                         <div class="text-right"> 
-                            <p class="font-bold text-sm">KSh ${item.price ? (item.price * item.qty).toLocaleString() : (650 * item.qty).toLocaleString()}</p> 
+                            <p class="font-black text-sm text-green-900">KSh ${item.price ? (item.price * item.qty).toLocaleString() : (650 * item.qty).toLocaleString()}</p> 
                         </div> 
                     </div> 
                 `; 
@@ -1003,11 +1054,11 @@
             tbody.innerHTML = ""; 
             batch.expenses.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(e => { 
                 tbody.innerHTML += ` 
-                    <tr class="border-b text-xs"> 
-                        <td class="p-2">${e.date}</td> 
-                        <td class="p-2 font-bold">${e.category}</td> 
-                        <td class="p-2">${parseInt(e.amount).toLocaleString()}</td> 
-                        <td class="p-2 text-gray-500">${e.desc || ''}</td> 
+                    <tr class="border-b border-gray-100 text-xs hover:bg-gray-50/50 transition"> 
+                        <td class="p-3 text-gray-500">${e.date}</td> 
+                        <td class="p-3 font-bold text-emerald-950">${e.category}</td> 
+                        <td class="p-3 font-black text-green-900">${parseInt(e.amount).toLocaleString()}</td> 
+                        <td class="p-3 text-gray-500 font-medium">${e.desc || ''}</td> 
                     </tr> 
                 `; 
             }); 
@@ -1033,11 +1084,11 @@
             document.getElementById('pl-total-exp').innerText = totalExp.toLocaleString() + " KES"; 
              
             document.getElementById('pl-net').innerText = net.toLocaleString() + " KES"; 
-            document.getElementById('pl-net').className = "text-5xl font-black " + (net >= 0 ? "text-white" : "text-red-300"); 
+            document.getElementById('pl-net').className = "text-5xl font-black " + (net >= 0 ? "text-transparent bg-clip-text bg-gradient-to-r from-emerald-100 to-green-50" : "text-red-300"); 
  
             const birdsProduced = batch.initialCount - calculateMortality(batch); 
-            document.getElementById('pl-cost-per').innerText = (totalExp / (birdsProduced || 1)).toFixed(1); 
-            document.getElementById('pl-rev-per').innerText = (totalRev / (birdsProduced || 1)).toFixed(1); 
+            document.getElementById('pl-cost-per').innerText = (totalExp / (birdsProduced || 1)).toFixed(1) + " KSh"; 
+            document.getElementById('pl-rev-per').innerText = (totalRev / (birdsProduced || 1)).toFixed(1) + " KSh"; 
         } 
  
         function updateBatchList() { 
@@ -1046,14 +1097,14 @@
             Object.values(state.batches).forEach(b => { 
                 const isActive = state.currentBatchId === b.id; 
                 container.innerHTML += ` 
-                    <div class="p-4 border-2 rounded-xl flex justify-between items-center ${isActive ? 'border-green-600 bg-green-50' : 'border-gray-100'}"> 
+                    <div class="p-4.5 border border-gray-150 rounded-2xl flex justify-between items-center hover:scale-[1.01] transition duration-200 ${isActive ? 'border-green-600 bg-green-50/50 shadow-sm' : 'bg-white/50'}"> 
                         <div> 
-                            <p class="font-bold text-sm">${b.name}</p> 
-                            <p class="text-[10px] text-gray-500">Started: ${b.startDate} • ${b.initialCount} birds</p> 
+                            <p class="font-extrabold text-sm text-green-950">${b.name}</p> 
+                            <p class="text-[10px] text-emerald-800/60 font-semibold mt-0.5">Started: ${b.startDate} • ${b.initialCount} birds</p> 
                         </div> 
-                        <div class="flex gap-2"> 
-                            ${!isActive ? `<button onclick="switchBatch('${b.id}')" class="bg-gray-200 text-[10px] px-2 py-1 rounded font-bold">Switch</button>` : '<span class="text-green-600 text-[10px] font-bold">ACTIVE</span>'} 
-                            <button onclick="deleteBatch('${b.id}')" class="text-red-200 hover:text-red-500">🗑️</button> 
+                        <div class="flex gap-2.5"> 
+                            ${!isActive ? `<button onclick="switchBatch('${b.id}')" class="bg-stone-200 hover:bg-stone-300 text-stone-900 text-[10px] px-3.5 py-1.5 rounded-xl font-bold min-h-[32px]">Switch</button>` : '<span class="text-green-700 bg-green-150 px-2.5 py-1 rounded-lg text-[10px] font-extrabold tracking-wider border border-green-200 uppercase shadow-sm">ACTIVE</span>'} 
+                            <button onclick="deleteBatch('${b.id}')" class="text-red-300 hover:text-red-500 hover:scale-110 transition text-lg">🗑️</button> 
                         </div> 
                     </div> 
                 `; 
