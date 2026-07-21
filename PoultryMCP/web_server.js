@@ -60,34 +60,54 @@ app.use(express.static(WEB_DIR));
 
 app.get('/api/sync', async (req, res) => {
   const data = await getFarmData();
-  res.json({
-    ...data,
-    batches: data.pm_batches || [],
-    expenses: data.pm_expenses || [],
-    stock: data.pm_stock || []
-  });
+  res.json(data);
 });
 
 app.post('/api/sync', async (req, res) => {
   if (req.body && typeof req.body === 'object') {
-    const currentData = await getFarmData();
-
-    const incomingBatches = req.body.pm_batches || req.body.batches || currentData.pm_batches || [];
-    const incomingExpenses = req.body.pm_expenses || req.body.expenses || currentData.pm_expenses || [];
-    const incomingStock = req.body.pm_stock || req.body.stock || currentData.pm_stock || [];
-
-    const mergedData = {
-      ...currentData,
-      ...req.body,
-      pm_batches: incomingBatches,
-      pm_expenses: incomingExpenses,
-      pm_stock: incomingStock
-    };
-
-    await saveFarmData(mergedData);
-    res.json({ success: true, data: mergedData });
+    await saveFarmData(req.body);
+    res.json({ success: true, data: req.body });
   } else {
     res.status(400).json({ error: "Invalid payload" });
+  }
+});
+
+app.post('/api/ai', async (req, res) => {
+  try {
+    const { prompt, systemInstruction } = req.body;
+    const apiKey = process.env.OPENROUTER_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: "OpenRouter API key is missing on the server" });
+    }
+    
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "http://localhost:3000",
+        "X-Title": "Poultry Farm Manager"
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          ...(systemInstruction ? [{ role: "system", content: systemInstruction }] : []),
+          { role: "user", content: prompt }
+        ]
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`OpenRouter API error: ${errorText}`);
+    }
+
+    const data = await response.json();
+    const text = data.choices?.[0]?.message?.content || "No response from AI.";
+    res.json({ text });
+  } catch (e) {
+    console.error("AI Proxy Error:", e);
+    res.status(500).json({ error: e.message });
   }
 });
 
