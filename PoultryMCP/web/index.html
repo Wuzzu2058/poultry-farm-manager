@@ -3,7 +3,7 @@
 <head> 
     <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>Poultry Farm Manager - AI Enhanced</title> 
+    <title>Poultry Farm Manager - BXN Farm Advisor</title> 
     <script src="https://cdn.tailwindcss.com"></script> 
     <style> 
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap'); 
@@ -194,7 +194,7 @@
                  
                 <div class="flex gap-3 mt-4 no-print w-full justify-center"> 
                     <button onclick="getAIInsight()" class="ai-glow-btn px-6 py-2 rounded-2xl flex items-center gap-2 transition hover:scale-105 active:scale-95"> 
-                        <span class="text-emerald-400">✨</span> Ask Llama Advisor 
+                        <span class="text-emerald-400">✨</span> Ask BXN Farm Advisor 
                     </button> 
                     <button onclick="playAIBriefing()" id="btn-tts" class="bg-emerald-550 text-white bg-green-700 hover:bg-green-800 px-6 py-2 rounded-2xl font-bold text-sm flex items-center gap-2 shadow-md hover:shadow-lg transition hover:scale-105 active:scale-95"> 
                         <span id="tts-icon">🔊</span> Live Audio Briefing 
@@ -207,7 +207,7 @@
                 <div class="absolute -right-12 -top-12 w-24 h-24 bg-blue-400/10 rounded-full blur-2xl"></div>
                 <div class="flex justify-between items-start mb-3 border-b border-green-100 pb-2"> 
                     <h3 class="font-bold text-green-950 flex items-center gap-2 text-lg">
-                        <span class="animate-pulse-soft">✨</span> Llama 3.1 Nemotron Insight
+                        <span class="animate-pulse-soft">✨</span> BXN Farm Advisor Insight
                     </h3> 
                     <button onclick="closeAIBox()" class="text-gray-400 hover:text-green-800 hover:bg-green-100/50 w-8 h-8 rounded-full flex items-center justify-center transition">✕</button> 
                 </div> 
@@ -279,9 +279,12 @@
                             <div> 
                                 <label class="block text-xs font-bold text-green-800 mb-1">Feed Type</label> 
                                 <select id="log-feed-type" class="w-full border-none bg-transparent font-bold text-lg focus:ring-0"> 
-                                    <option value="Chick Mash">Chick Mash (0-3 wks)</option> 
-                                    <option value="Grower Mash">Grower Mash (4-7 wks)</option> 
-                                    <option value="Finisher">Finisher (8+ wks)</option> 
+                                    <option value="Chick Mash" data-cp="20.0" data-me="2800" data-ca="1.0">Chick Mash (0-8 weeks)</option> 
+                                    <option value="Grower Mash" data-cp="16.0" data-me="2650" data-ca="1.0">Grower Mash (8-18 weeks)</option> 
+                                    <option value="Layers Mash" data-cp="16.5" data-me="2600" data-ca="3.8">Layers Mash (18+ weeks)</option> 
+                                    <option value="Broiler Starter" data-cp="22.0" data-me="3000" data-ca="1.0">Broiler Starter (0-3 weeks)</option> 
+                                    <option value="Broiler Finisher" data-cp="19.0" data-me="3150" data-ca="0.9">Broiler Finisher (4-6 weeks)</option> 
+                                    <option value="Kienyeji Mash" data-cp="16.0" data-me="2700" data-ca="1.5">Kienyeji Mash (Dual Purpose)</option> 
                                 </select> 
                             </div> 
                             <div> 
@@ -300,10 +303,28 @@
                         <div class="flex justify-between items-end mb-1"> 
                             <label class="block text-sm font-bold text-emerald-950">Notes & Observations</label> 
                             <button type="button" onclick="checkSymptoms()" class="text-[10px] font-bold bg-purple-100 text-purple-800 px-3 py-1.5 rounded-lg hover:bg-purple-200 transition shadow-sm"> 
-                                ✨ AI Symptom Check 
+                                ✨ BXN Symptom Check 
                             </button> 
                         </div> 
                         <textarea id="log-notes" rows="2" class="w-full border-2 border-gray-200 rounded-lg" placeholder="Any behavior changes? (E.g. cough, lethargy, wet droppings)"></textarea> 
+                    </div> 
+
+                    <!-- Vision AI Photo Analysis Component -->
+                    <div class="space-y-3 bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100/80"> 
+                        <label class="block text-sm font-bold text-emerald-950 flex items-center gap-2"> 
+                            <span>📷</span> Bird Photo Analysis (BXN Vision Advisor)
+                        </label> 
+                        <div class="flex flex-col sm:flex-row gap-3 items-center"> 
+                            <input type="file" id="bird-image-input" accept="image/*" capture="environment" class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-700 file:text-white hover:file:bg-emerald-800 cursor-pointer"> 
+                            <button type="button" id="btn-analyze-bird-photo" onclick="analyzeBirdPhoto()" class="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-emerald-800 to-teal-800 text-white rounded-xl font-bold text-xs shadow hover:opacity-95 transition flex items-center justify-center gap-1.5 whitespace-nowrap"> 
+                                <span>✨</span> Analyze Bird Photo with BXN Farm Advisor 
+                            </button> 
+                        </div> 
+                        <div id="bird-image-preview-container" class="hidden mt-2"> 
+                            <img id="bird-image-preview" src="" alt="Bird Photo Preview" class="max-h-48 rounded-xl border-2 border-emerald-200 object-contain shadow-sm"> 
+                        </div> 
+                        <div id="bird-analysis-result" class="hidden p-4 bg-white rounded-xl border border-emerald-200 shadow-sm text-sm text-slate-800 whitespace-pre-wrap leading-relaxed"> 
+                        </div> 
                     </div> 
  
                     <button type="submit" class="w-full bg-gradient-to-r from-green-800 to-green-700 text-white text-xl font-bold py-4 rounded-2xl shadow-lg hover:shadow-xl hover:from-green-700 hover:to-green-600 transition">SAVE DAILY LOG</button> 
@@ -322,6 +343,169 @@
                 
                 <!-- Quick Defaults Button (Interactive Neon Style) -->
                 <button type="button" onclick="loadVaccineDefaults()" class="w-full bg-gradient-to-r from-slate-100 to-emerald-50/50 hover:from-emerald-50 hover:to-emerald-100 text-emerald-900 font-extrabold py-3.5 rounded-2xl mb-5 border border-emerald-200 shadow-sm transition hover:scale-[1.01] active:scale-95">🔮 LOAD STANDARD VACCINATION SCHEDULE</button>
+
+                <!-- Interactive Medication & Vaccine Presets Guide -->
+                <div id="medication-presets-guide" class="mb-6 space-y-4 bg-gradient-to-br from-emerald-50/80 to-teal-50/50 p-5 rounded-2xl border border-emerald-200/80 shadow-sm">
+                    <div class="flex justify-between items-center border-b border-emerald-200/60 pb-3">
+                        <h3 class="font-extrabold text-xl text-green-950 flex items-center gap-2">
+                            <span>💊</span> Interactive Medication & Vaccine Presets Guide
+                        </h3>
+                        <span class="text-[10px] bg-emerald-200/70 text-emerald-950 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">Dosage & Dilution Advisor</span>
+                    </div>
+                    <p class="text-xs text-emerald-900/80 font-medium">
+                        Standard poultry medication profiles with complete dilution rates, dosages, application methods, and timing. Click <strong>Add Preset to Schedule</strong> to register directly into your active farm schedule.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                        <!-- Newcastle Disease -->
+                        <div class="bg-white/90 p-4 rounded-xl border border-emerald-100 shadow-xs flex flex-col justify-between space-y-3">
+                            <div>
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-extrabold text-green-950 text-base">Newcastle Disease (HB1 / LaSota)</h4>
+                                    <span class="text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">Day 7 & 21</span>
+                                </div>
+                                <div class="mt-2 space-y-1 text-xs text-slate-700">
+                                    <p><strong>Dosage Rate:</strong> 1 dose/bird</p>
+                                    <p><strong>Application Method:</strong> In drinking water</p>
+                                    <p class="bg-blue-50/80 p-2 rounded-lg border border-blue-100/80 text-blue-950 font-medium">
+                                        <strong>Dilution Rate:</strong> 1000 doses in 10-20L cool non-chlorinated water
+                                    </p>
+                                    <p class="text-[11px] text-slate-500 font-medium"><strong>Timing:</strong> Day 7 & 21</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="addPresetToSchedule('newcastle')" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 px-3 rounded-xl text-xs shadow-xs transition hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-1">
+                                <span>➕</span> Add Preset to Schedule
+                            </button>
+                        </div>
+
+                        <!-- Gumboro -->
+                        <div class="bg-white/90 p-4 rounded-xl border border-emerald-100 shadow-xs flex flex-col justify-between space-y-3">
+                            <div>
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-extrabold text-green-950 text-base">Gumboro (IBDV)</h4>
+                                    <span class="text-[10px] font-bold bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full">Day 10 & 18</span>
+                                </div>
+                                <div class="mt-2 space-y-1 text-xs text-slate-700">
+                                    <p><strong>Dosage Rate:</strong> 1 dose/bird</p>
+                                    <p><strong>Application Method:</strong> In drinking water</p>
+                                    <p class="bg-purple-50/80 p-2 rounded-lg border border-purple-100/80 text-purple-950 font-medium">
+                                        <strong>Dilution Rate:</strong> 1000 doses in 10-20L cool water with skimmed milk powder stabilizer
+                                    </p>
+                                    <p class="text-[11px] text-slate-500 font-medium"><strong>Timing:</strong> Day 10 & 18</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="addPresetToSchedule('gumboro')" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 px-3 rounded-xl text-xs shadow-xs transition hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-1">
+                                <span>➕</span> Add Preset to Schedule
+                            </button>
+                        </div>
+
+                        <!-- Fowl Pox -->
+                        <div class="bg-white/90 p-4 rounded-xl border border-emerald-100 shadow-xs flex flex-col justify-between space-y-3">
+                            <div>
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-extrabold text-green-950 text-base">Fowl Pox</h4>
+                                    <span class="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">Week 6 (Day 42)</span>
+                                </div>
+                                <div class="mt-2 space-y-1 text-xs text-slate-700">
+                                    <p><strong>Dosage Rate:</strong> 1 dose/bird</p>
+                                    <p><strong>Application Method:</strong> Wing-web prick</p>
+                                    <p class="bg-amber-50/80 p-2 rounded-lg border border-amber-100/80 text-amber-950 font-medium">
+                                        <strong>Dilution Rate:</strong> Reconstitute freeze-dried vaccine with diluent provided
+                                    </p>
+                                    <p class="text-[11px] text-slate-500 font-medium"><strong>Timing:</strong> Week 6 (Day 42)</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="addPresetToSchedule('fowl-pox')" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 px-3 rounded-xl text-xs shadow-xs transition hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-1">
+                                <span>➕</span> Add Preset to Schedule
+                            </button>
+                        </div>
+
+                        <!-- Coccidiostat -->
+                        <div class="bg-white/90 p-4 rounded-xl border border-emerald-100 shadow-xs flex flex-col justify-between space-y-3">
+                            <div>
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-extrabold text-green-950 text-base">Coccidiostat (Amprolium / Anticoccidial)</h4>
+                                    <span class="text-[10px] font-bold bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full">5-7 Days</span>
+                                </div>
+                                <div class="mt-2 space-y-1 text-xs text-slate-700">
+                                    <p><strong>Dosage Rate:</strong> 0.5g/L</p>
+                                    <p><strong>Application Method:</strong> In drinking water</p>
+                                    <p class="bg-rose-50/80 p-2 rounded-lg border border-rose-100/80 text-rose-950 font-medium">
+                                        <strong>Dilution Rate:</strong> 0.5g/L in drinking water for 5-7 consecutive days
+                                    </p>
+                                    <p class="text-[11px] text-slate-500 font-medium"><strong>Timing:</strong> 5-7 consecutive days during prevention/outbreak</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="addPresetToSchedule('coccidiostat')" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 px-3 rounded-xl text-xs shadow-xs transition hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-1">
+                                <span>➕</span> Add Preset to Schedule
+                            </button>
+                        </div>
+
+                        <!-- Marek's Disease -->
+                        <div class="bg-white/90 p-4 rounded-xl border border-emerald-100 shadow-xs flex flex-col justify-between space-y-3">
+                            <div>
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-extrabold text-green-950 text-base">Marek's Disease</h4>
+                                    <span class="text-[10px] font-bold bg-teal-100 text-teal-800 px-2 py-0.5 rounded-full">Day 1</span>
+                                </div>
+                                <div class="mt-2 space-y-1 text-xs text-slate-700">
+                                    <p><strong>Dosage Rate:</strong> 1 dose/bird</p>
+                                    <p><strong>Application Method:</strong> Subcutaneous injection</p>
+                                    <p class="bg-teal-50/80 p-2 rounded-lg border border-teal-100/80 text-teal-950 font-medium">
+                                        <strong>Dilution Rate:</strong> Reconstitute with diluent provided by hatchery
+                                    </p>
+                                    <p class="text-[11px] text-slate-500 font-medium"><strong>Timing:</strong> Day 1 (Hatchery)</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="addPresetToSchedule('mareks')" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 px-3 rounded-xl text-xs shadow-xs transition hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-1">
+                                <span>➕</span> Add Preset to Schedule
+                            </button>
+                        </div>
+
+                        <!-- Infectious Bronchitis -->
+                        <div class="bg-white/90 p-4 rounded-xl border border-emerald-100 shadow-xs flex flex-col justify-between space-y-3">
+                            <div>
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-extrabold text-green-950 text-base">Infectious Bronchitis (IB H120)</h4>
+                                    <span class="text-[10px] font-bold bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full">Day 14</span>
+                                </div>
+                                <div class="mt-2 space-y-1 text-xs text-slate-700">
+                                    <p><strong>Dosage Rate:</strong> 1 dose/bird</p>
+                                    <p><strong>Application Method:</strong> Eye drop or drinking water</p>
+                                    <p class="bg-indigo-50/80 p-2 rounded-lg border border-indigo-100/80 text-indigo-950 font-medium">
+                                        <strong>Dilution Rate:</strong> 1000 doses in 10-20L cool non-chlorinated water
+                                    </p>
+                                    <p class="text-[11px] text-slate-500 font-medium"><strong>Timing:</strong> Day 14</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="addPresetToSchedule('infectious-bronchitis')" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 px-3 rounded-xl text-xs shadow-xs transition hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-1">
+                                <span>➕</span> Add Preset to Schedule
+                            </button>
+                        </div>
+
+                        <!-- Dewormer -->
+                        <div class="bg-white/90 p-4 rounded-xl border border-emerald-100 shadow-xs flex flex-col justify-between space-y-3">
+                            <div>
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-extrabold text-green-950 text-base">Dewormer (Levamisole / Piperazine)</h4>
+                                    <span class="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">Week 8 & 16</span>
+                                </div>
+                                <div class="mt-2 space-y-1 text-xs text-slate-700">
+                                    <p><strong>Dosage Rate:</strong> 1g/L</p>
+                                    <p><strong>Application Method:</strong> In drinking water</p>
+                                    <p class="bg-amber-50/80 p-2 rounded-lg border border-amber-100/80 text-amber-950 font-medium">
+                                        <strong>Dilution Rate:</strong> 1g/L in drinking water for 24 hours
+                                    </p>
+                                    <p class="text-[11px] text-slate-500 font-medium"><strong>Timing:</strong> Week 8 & Week 16</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="addPresetToSchedule('dewormer')" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 px-3 rounded-xl text-xs shadow-xs transition hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-1">
+                                <span>➕</span> Add Preset to Schedule
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
 
                 <form id="vaccine-form" class="space-y-4"> 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> 
@@ -771,7 +955,7 @@
                 recentNotes: batch.logs.slice(-3).map(l => l.notes) 
             }; 
  
-            showAIBox("✨ Querying Llama 3.1 Nemotron Expert advisor..."); 
+            showAIBox("✨ Querying BXN Farm Advisor..."); 
              
             try { 
                 const prompt = `You are a high-tier poultry advisor for a farm in Kenya. 
@@ -787,7 +971,7 @@
                 const text = result.candidates?.[0]?.content?.parts?.[0]?.text || "No insights available right now."; 
                 showAIBox(text); 
             } catch (e) { 
-                showAIBox("Unable to reach AI advisor. " + e.message); 
+                showAIBox("Unable to reach BXN Farm Advisor. " + e.message); 
             } 
         } 
  
@@ -841,7 +1025,7 @@
             const notes = document.getElementById('log-notes').value; 
             if (!notes || notes.length < 5) return alert("Write some symptoms in the notes first!"); 
  
-            showAIBox("✨ AI checking symptoms..."); 
+            showAIBox("✨ BXN Farm Advisor checking symptoms..."); 
              
             try { 
                 const prompt = `A poultry farmer reports these observations: "${notes}". 
@@ -855,10 +1039,93 @@
                 const text = result.candidates?.[0]?.content?.parts?.[0]?.text || "No advice found."; 
                 showAIBox(text); 
             } catch (e) { 
-                showAIBox("AI Symptom check unavailable. " + e.message); 
-            } 
+                showAIBox("BXN Symptom check unavailable. " + e.message); 
         } 
- 
+
+        let selectedBirdImageDataUrl = null;
+
+        function initBirdImageHandler() {
+            const input = document.getElementById('bird-image-input');
+            if (input) {
+                input.addEventListener('change', (e) => {
+                    const file = e.target.files && e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            selectedBirdImageDataUrl = event.target.result;
+                            const preview = document.getElementById('bird-image-preview');
+                            const previewContainer = document.getElementById('bird-image-preview-container');
+                            if (preview) {
+                                preview.src = selectedBirdImageDataUrl;
+                            }
+                            if (previewContainer) {
+                                previewContainer.classList.remove('hidden');
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        }
+
+        window.analyzeBirdPhoto = async function() {
+            const resultDiv = document.getElementById('bird-analysis-result');
+            if (!selectedBirdImageDataUrl) {
+                const input = document.getElementById('bird-image-input');
+                if (input && input.files && input.files[0]) {
+                    const file = input.files[0];
+                    selectedBirdImageDataUrl = await new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => resolve(e.target.result);
+                        reader.readAsDataURL(file);
+                    });
+                }
+            }
+
+            if (!selectedBirdImageDataUrl) {
+                return alert("Please select or capture a bird photo first!");
+            }
+
+            if (resultDiv) {
+                resultDiv.classList.remove('hidden');
+                resultDiv.innerHTML = '<span class="animate-pulse-soft">✨ Analyzing bird photo with BXN Farm Advisor...</span>';
+            }
+
+            try {
+                const response = await fetch('/api/ai/vision', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ imageDataUrl: selectedBirdImageDataUrl })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error ${response.status}`);
+                }
+
+                const data = await response.json();
+                let displayText = "";
+
+                if (data.analysis) {
+                    displayText = data.analysis;
+                    if (data.remedies && data.remedies !== data.analysis) {
+                        displayText += "\n\n" + data.remedies;
+                    }
+                } else if (data.error) {
+                    displayText = "Analysis failed: " + data.error;
+                } else {
+                    displayText = "No analysis output returned.";
+                }
+
+                if (resultDiv) {
+                    resultDiv.innerText = displayText;
+                }
+            } catch (e) {
+                if (resultDiv) {
+                    resultDiv.innerText = "Error analyzing bird photo: " + e.message;
+                }
+            }
+        };
+
         // --- Core Helpers --- 
         function calculateAge(startDateStr) { 
             const start = new Date(startDateStr); 
@@ -918,29 +1185,195 @@
             }); 
         } 
  
+        const KENYAN_FEEDS = {
+            "Chick Mash": {
+                name: "Chick Mash",
+                ageRange: "0-8 weeks",
+                cp: 20.0,
+                me: 2800,
+                ca: 1.0,
+                intakeGramsPerBird: 35
+            },
+            "Grower Mash": {
+                name: "Grower Mash",
+                ageRange: "8-18 weeks",
+                cp: 16.0,
+                me: 2650,
+                ca: 1.0,
+                intakeGramsPerBird: 75
+            },
+            "Layers Mash": {
+                name: "Layers Mash",
+                ageRange: "18+ weeks",
+                cp: 16.5,
+                me: 2600,
+                ca: 3.8,
+                intakeGramsPerBird: 120
+            },
+            "Broiler Starter": {
+                name: "Broiler Starter",
+                ageRange: "0-3 weeks",
+                cp: 22.0,
+                me: 3000,
+                ca: 1.0,
+                intakeGramsPerBird: 45
+            },
+            "Broiler Finisher": {
+                name: "Broiler Finisher",
+                ageRange: "4-6 weeks",
+                cp: 19.0,
+                me: 3150,
+                ca: 0.9,
+                intakeGramsPerBird: 130
+            },
+            "Kienyeji Mash": {
+                name: "Kienyeji Mash",
+                ageRange: "Dual Purpose",
+                cp: 16.0,
+                me: 2700,
+                ca: 1.5,
+                intakeGramsPerBird: 85
+            }
+        };
+        window.KENYAN_FEEDS = KENYAN_FEEDS;
+
         function updateFeedSuggestion(batch, liveCount) { 
             const ageDays = calculateAge(batch.startDate); 
-            let type = "Chick Mash"; 
-            let ratio = 0.035; 
-            let details = "Starter chicks require high-protein Starter Mash (approx. 35g/bird). Ensure clean water is always available."; 
-   
-            if (ageDays > 14 && ageDays <= 42) { 
-                type = "Grower Mash"; 
-                ratio = 0.075; 
-                details = "Growing birds require Grower Mash (approx. 75g/bird). Monitor body weight gains closely."; 
-            } else if (ageDays > 42) { 
-                type = "Finisher"; 
-                ratio = 0.12; 
-                details = "Finishing phase requires energy-dense Finisher Mash (approx. 120g/bird). Feed for rapid growth."; 
-            } 
-  
-            document.getElementById('log-feed-type').value = type; 
-            document.getElementById('log-feed-qty').value = (liveCount * ratio).toFixed(1); 
- 
-            const suggestedQty = (liveCount * ratio).toFixed(1); 
-            document.getElementById('dash-feed-type').innerText = `${type} — ${suggestedQty} kg total`; 
-            document.getElementById('dash-feed-details').innerText = `${details} (${(ratio * 1000).toFixed(0)}g per bird per day for ${liveCount} birds)`; 
-        } 
+            let feedKey = "Chick Mash"; 
+            
+            const isBroilerBatch = batch && batch.name && /broiler/i.test(batch.name);
+            const isKienyejiBatch = batch && batch.name && /kienyeji/i.test(batch.name);
+
+            if (isBroilerBatch) {
+                if (ageDays <= 21) {
+                    feedKey = "Broiler Starter";
+                } else {
+                    feedKey = "Broiler Finisher";
+                }
+            } else if (isKienyejiBatch) {
+                if (ageDays <= 56) {
+                    feedKey = "Chick Mash";
+                } else {
+                    feedKey = "Kienyeji Mash";
+                }
+            } else {
+                if (ageDays <= 56) {
+                    feedKey = "Chick Mash"; 
+                } else if (ageDays <= 126) {
+                    feedKey = "Grower Mash"; 
+                } else {
+                    feedKey = "Layers Mash"; 
+                }
+            }
+
+            const feed = KENYAN_FEEDS[feedKey] || KENYAN_FEEDS["Chick Mash"];
+            const ratio = feed.intakeGramsPerBird / 1000;
+            const suggestedQty = (liveCount * ratio).toFixed(1);
+
+            const feedSelect = document.getElementById('log-feed-type');
+            if (feedSelect) {
+                feedSelect.value = feedKey;
+            }
+            const qtyInput = document.getElementById('log-feed-qty');
+            if (qtyInput) {
+                qtyInput.value = suggestedQty;
+            }
+
+            const dashFeedType = document.getElementById('dash-feed-type');
+            if (dashFeedType) {
+                dashFeedType.innerText = `${feed.name} (${feed.ageRange}) — ${suggestedQty} kg total`;
+            }
+
+            const dashFeedDetails = document.getElementById('dash-feed-details');
+            if (dashFeedDetails) {
+                dashFeedDetails.innerHTML = `
+                    <div class="space-y-2 text-xs text-amber-900">
+                        <div class="font-bold border-b border-amber-200/80 pb-1 flex flex-wrap justify-between items-center gap-1">
+                            <span>Mathematical Formula:</span>
+                            <span class="font-mono text-[11px] bg-amber-100/70 px-2 py-0.5 rounded text-amber-950">
+                                Recommended Daily Feed (kg) = Flock Size × Intake Rate (g/bird/day) ÷ 1000
+                            </span>
+                        </div>
+                        <div class="font-medium text-amber-950">
+                            <strong>Model Calculation:</strong> ${liveCount} birds × ${feed.intakeGramsPerBird} g/bird/day ÷ 1000 = <strong>${suggestedQty} kg/day</strong>
+                        </div>
+                        <div class="bg-amber-100/50 p-2 rounded-xl border border-amber-200/50 mt-1">
+                            <p class="font-bold text-amber-950 mb-1">Nutrient Profile Breakdown (${feed.name}):</p>
+                            <div class="grid grid-cols-3 gap-2 text-center font-semibold">
+                                <div class="bg-white/80 p-1.5 rounded-lg border border-amber-200/60">
+                                    <span class="block text-[9px] uppercase text-amber-800 font-bold">Crude Protein (CP)</span>
+                                    <span class="text-sm font-black text-amber-950">${feed.cp}%</span>
+                                </div>
+                                <div class="bg-white/80 p-1.5 rounded-lg border border-amber-200/60">
+                                    <span class="block text-[9px] uppercase text-amber-800 font-bold">Energy (ME)</span>
+                                    <span class="text-sm font-black text-amber-950">${feed.me} <xs class="text-[9px]">kcal/kg</xs></span>
+                                </div>
+                                <div class="bg-white/80 p-1.5 rounded-lg border border-amber-200/60">
+                                    <span class="block text-[9px] uppercase text-amber-800 font-bold">Calcium (Ca)</span>
+                                    <span class="text-sm font-black text-amber-950">${feed.ca}%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function initFeedTypeListener() {
+            const feedSelect = document.getElementById('log-feed-type');
+            if (feedSelect) {
+                feedSelect.addEventListener('change', () => {
+                    const batch = getActiveBatch();
+                    const liveCount = batch ? calculateLiveCount(batch).live : 0;
+                    const selectedType = feedSelect.value;
+                    const feed = KENYAN_FEEDS[selectedType];
+                    if (feed) {
+                        const ratio = feed.intakeGramsPerBird / 1000;
+                        const suggestedQty = (liveCount * ratio).toFixed(1);
+                        const qtyInput = document.getElementById('log-feed-qty');
+                        if (qtyInput) qtyInput.value = suggestedQty;
+                        
+                        const dashFeedType = document.getElementById('dash-feed-type');
+                        if (dashFeedType) {
+                            dashFeedType.innerText = `${feed.name} (${feed.ageRange}) — ${suggestedQty} kg total`;
+                        }
+                        const dashFeedDetails = document.getElementById('dash-feed-details');
+                        if (dashFeedDetails) {
+                            dashFeedDetails.innerHTML = `
+                                <div class="space-y-2 text-xs text-amber-900">
+                                    <div class="font-bold border-b border-amber-200/80 pb-1 flex flex-wrap justify-between items-center gap-1">
+                                        <span>Mathematical Formula:</span>
+                                        <span class="font-mono text-[11px] bg-amber-100/70 px-2 py-0.5 rounded text-amber-950">
+                                            Recommended Daily Feed (kg) = Flock Size × Intake Rate (g/bird/day) ÷ 1000
+                                        </span>
+                                    </div>
+                                    <div class="font-medium text-amber-950">
+                                        <strong>Model Calculation:</strong> ${liveCount} birds × ${feed.intakeGramsPerBird} g/bird/day ÷ 1000 = <strong>${suggestedQty} kg/day</strong>
+                                    </div>
+                                    <div class="bg-amber-100/50 p-2 rounded-xl border border-amber-200/50 mt-1">
+                                        <p class="font-bold text-amber-950 mb-1">Nutrient Profile Breakdown (${feed.name}):</p>
+                                        <div class="grid grid-cols-3 gap-2 text-center font-semibold">
+                                            <div class="bg-white/80 p-1.5 rounded-lg border border-amber-200/60">
+                                                <span class="block text-[9px] uppercase text-amber-800 font-bold">Crude Protein (CP)</span>
+                                                <span class="text-sm font-black text-amber-950">${feed.cp}%</span>
+                                            </div>
+                                            <div class="bg-white/80 p-1.5 rounded-lg border border-amber-200/60">
+                                                <span class="block text-[9px] uppercase text-amber-800 font-bold">Energy (ME)</span>
+                                                <span class="text-sm font-black text-amber-950">${feed.me} <xs class="text-[9px]">kcal/kg</xs></span>
+                                            </div>
+                                            <div class="bg-white/80 p-1.5 rounded-lg border border-amber-200/60">
+                                                <span class="block text-[9px] uppercase text-amber-800 font-bold">Calcium (Ca)</span>
+                                                <span class="text-sm font-black text-amber-950">${feed.ca}%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                });
+            }
+        }
  
         function updateDashboard(batch) { 
             const age = calculateAge(batch.startDate); 
@@ -991,12 +1424,16 @@
             const container = document.getElementById('log-history'); 
             container.innerHTML = "<h3 class='font-bold text-gray-400 uppercase text-[10px] mb-2 tracking-wider'>Recent Logs</h3>"; 
             batch.logs.slice(-5).reverse().forEach(l => { 
+                const imageHtml = (l.image || l.imageDataUrl) ? `<img src="${l.image || l.imageDataUrl}" class="w-12 h-12 rounded-lg object-cover border border-emerald-200 shadow-sm flex-shrink-0" alt="Bird Photo">` : '';
                 container.innerHTML += ` 
                     <div class="bg-white p-4 rounded-xl border border-gray-100 flex justify-between items-center hover:scale-[1.01] transition duration-200"> 
-                        <div> 
-                            <p class="font-bold text-xs text-green-950">${l.date}</p> 
-                            <p class="text-[10px] text-emerald-800/60 font-semibold mt-0.5">${l.feedType} • ${l.feedQty}kg • ${l.mortality || 0} died</p> 
-                        </div> 
+                        <div class="flex items-center gap-3">
+                            ${imageHtml}
+                            <div> 
+                                <p class="font-bold text-xs text-green-950">${l.date}</p> 
+                                <p class="text-[10px] text-emerald-800/60 font-semibold mt-0.5">${l.feedType} • ${l.feedQty}kg • ${l.mortality || 0} died</p> 
+                            </div> 
+                        </div>
                         <div class="text-right"> 
                             <p class="font-black text-green-700 text-sm">${l.weight || '-'} kg</p> 
                             <p class="text-[8px] uppercase text-gray-400 font-bold">Avg Weight</p> 
@@ -1111,6 +1548,131 @@
             }); 
         } 
  
+        // --- Medication & Vaccine Presets Guide Data & Handler ---
+        const MEDICATION_PRESETS = [
+            {
+                id: 'newcastle',
+                name: 'Newcastle Disease (HB1 / LaSota)',
+                timing: 'Day 7 & 21',
+                dayOffsets: [7, 21],
+                dosage: '1 dose/bird',
+                method: 'In drinking water',
+                dilution: '1000 doses in 10-20L cool non-chlorinated water'
+            },
+            {
+                id: 'gumboro',
+                name: 'Gumboro (IBDV)',
+                timing: 'Day 10 & 18',
+                dayOffsets: [10, 18],
+                dosage: '1 dose/bird',
+                method: 'In drinking water',
+                dilution: '1000 doses in 10-20L cool water with skimmed milk powder stabilizer'
+            },
+            {
+                id: 'fowl-pox',
+                name: 'Fowl Pox',
+                timing: 'Week 6 (Day 42)',
+                dayOffsets: [42],
+                dosage: '1 dose/bird',
+                method: 'Wing-web prick',
+                dilution: 'Reconstitute freeze-dried vaccine with diluent provided'
+            },
+            {
+                id: 'coccidiostat',
+                name: 'Coccidiostat (Amprolium / Anticoccidial)',
+                timing: '5-7 consecutive days during prevention/outbreak',
+                dayOffsets: [14],
+                dosage: '0.5g/L',
+                method: 'In drinking water',
+                dilution: '0.5g/L in drinking water for 5-7 consecutive days'
+            },
+            {
+                id: 'mareks',
+                name: "Marek's Disease Vaccine",
+                timing: 'Day 1 (Hatchery)',
+                dayOffsets: [1],
+                dosage: '1 dose/bird',
+                method: 'Subcutaneous injection',
+                dilution: 'Reconstitute with diluent provided by hatchery'
+            },
+            {
+                id: 'infectious-bronchitis',
+                name: 'Infectious Bronchitis (IB H120)',
+                timing: 'Day 14',
+                dayOffsets: [14],
+                dosage: '1 dose/bird',
+                method: 'Eye drop or drinking water',
+                dilution: '1000 doses in 10-20L cool non-chlorinated water'
+            },
+            {
+                id: 'dewormer',
+                name: 'Dewormer (Levamisole / Piperazine)',
+                timing: 'Week 8 & Week 16',
+                dayOffsets: [56, 112],
+                dosage: '1g/L',
+                method: 'In drinking water',
+                dilution: '1g/L in drinking water for 24 hours'
+            }
+        ];
+        window.MEDICATION_PRESETS = MEDICATION_PRESETS;
+
+        window.addPresetToSchedule = function(presetId, customBatch = null) {
+            const preset = MEDICATION_PRESETS.find(p => p.id === presetId || p.name.toLowerCase().includes(presetId.toLowerCase()));
+            if (!preset) return null;
+            
+            const batch = customBatch || getActiveBatch();
+            if (!batch) {
+                if (typeof alert === 'function') alert("Please create or select an active batch first!");
+                return null;
+            }
+            
+            const start = new Date(batch.startDate || new Date().toISOString().split('T')[0]);
+            const formatDate = (date) => date.toISOString().split('T')[0];
+            const addDays = (date, days) => {
+                const result = new Date(date);
+                result.setDate(result.getDate() + days);
+                return result;
+            };
+
+            const offsets = Array.isArray(preset.dayOffsets) ? preset.dayOffsets : [preset.dayOffset || 0];
+            const addedEntries = [];
+            
+            offsets.forEach((days, idx) => {
+                const targetDate = formatDate(addDays(start, days));
+                const doseSuffix = offsets.length > 1 ? ` (Dose ${idx + 1})` : '';
+                const entryName = `${preset.name}${doseSuffix}`;
+                const entryDesc = `${preset.dosage} via ${preset.method} | Dilution: ${preset.dilution} | Timing: ${preset.timing}`;
+                
+                const newEntry = {
+                    id: 'preset-' + preset.id + '-' + days + '-' + Date.now() + Math.random().toString(36).substr(2, 4),
+                    date: targetDate,
+                    name: entryName,
+                    desc: entryDesc,
+                    repeat: "0",
+                    done: false
+                };
+                
+                batch.schedule.push(newEntry);
+                addedEntries.push(newEntry);
+            });
+
+            if (typeof document !== 'undefined') {
+                const vacName = document.getElementById('vac-name');
+                const vacDesc = document.getElementById('vac-desc');
+                const vacDate = document.getElementById('vac-date');
+                if (vacName) vacName.value = preset.name;
+                if (vacDesc) vacDesc.value = `${preset.dosage} via ${preset.method} | Dilution: ${preset.dilution}`;
+                if (vacDate) vacDate.value = formatDate(addDays(start, offsets[0]));
+            }
+
+            if (typeof saveState === 'function') saveState();
+            if (typeof alert === 'function' && !customBatch) {
+                alert(`Added ${preset.name} (${addedEntries.length} schedule ${addedEntries.length === 1 ? 'entry' : 'entries'}) to active farm schedule!`);
+            }
+            
+            return addedEntries;
+        };
+
         // --- Vaccine Defaults Loader --- 
         window.loadVaccineDefaults = function() { 
             const batch = getActiveBatch(); 
@@ -1194,10 +1756,19 @@
                 feedType: document.getElementById('log-feed-type').value, 
                 feedQty: parseFloat(document.getElementById('log-feed-qty').value || 0), 
                 sawdust: document.getElementById('log-sawdust').checked, 
-                notes: document.getElementById('log-notes').value 
+                notes: document.getElementById('log-notes').value,
+                image: selectedBirdImageDataUrl || null
             }); 
             saveState(); 
             e.target.reset(); 
+            selectedBirdImageDataUrl = null;
+            const previewContainer = document.getElementById('bird-image-preview-container');
+            if (previewContainer) previewContainer.classList.add('hidden');
+            const resultDiv = document.getElementById('bird-analysis-result');
+            if (resultDiv) {
+                resultDiv.classList.add('hidden');
+                resultDiv.innerHTML = '';
+            }
             setToday('log-date'); 
             alert("Log saved successfully!"); 
         }; 
@@ -1324,6 +1895,8 @@
         } 
  
         loadState(); 
+        initBirdImageHandler();
+        initFeedTypeListener();
         setToday('log-date'); 
         setToday('vac-date'); 
         setToday('sale-date'); 

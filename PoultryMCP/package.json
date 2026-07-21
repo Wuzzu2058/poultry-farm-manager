@@ -5,7 +5,8 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node web_server.js"
+    "start": "node web_server.js",
+    "test": "node test/run_all_tests.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
