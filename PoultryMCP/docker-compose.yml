@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  poultry-web:
+    build: .
+    container_name: poultry-web
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGODB_URI=mongodb://poultry-db:27017/poultry_farm
+      - PORT=3000
+    depends_on:
+      - poultry-db
+    restart: always
+
+  poultry-db:
+    image: mongo:latest
+    container_name: poultry-db
+    ports:
+      - "27018:27017" # Mapped to 27018 to avoid conflict with host's MongoDB running on 27017
+    volumes:
+      - poultry_db_data:/data/db
+    restart: always
+
+volumes:
+  poultry_db_data:

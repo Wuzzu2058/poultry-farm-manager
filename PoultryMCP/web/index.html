@@ -3053,7 +3053,7 @@
     // --- POULTRY SYNC OVERLAY ---
     try {
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', 'http://localhost:3000/api/sync', false);
+      xhr.open('GET', '/api/sync', false);
       xhr.send(null);
       if (xhr.status === 200) {
         var data = JSON.parse(xhr.responseText);
@@ -3072,7 +3072,7 @@
           pm_expenses: JSON.parse(localStorage.getItem('pm_expenses') || '[]'),
           pm_stock: JSON.parse(localStorage.getItem('pm_stock') || '[]')
         };
-        fetch('http://localhost:3000/api/sync', {
+        fetch('/api/sync', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         }).catch(e => { });
