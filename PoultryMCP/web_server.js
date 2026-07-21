@@ -87,7 +87,7 @@ app.post('/api/ai', async (req, res) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "nvidia/llama-3.1-nemotron-70b-instruct",
+        model: "meta/llama-3.3-70b-instruct",
         messages: [
           ...(systemInstruction ? [{ role: "system", content: systemInstruction }] : []),
           { role: "user", content: prompt }

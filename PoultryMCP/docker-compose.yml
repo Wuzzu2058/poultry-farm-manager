@@ -6,6 +6,8 @@ services:
     container_name: poultry-web
     ports:
       - "3000:3000"
+    env_file:
+      - .env
     environment:
       - MONGODB_URI=mongodb://poultry-db:27017/poultry_farm
       - PORT=3000
